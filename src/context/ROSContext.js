@@ -24,7 +24,6 @@ export const ROSProvider = ({ children }) => {
     try {
       const data = JSON.parse(event.data);
       
-      // Check if this is a topic message (has 'topic' and 'msg' fields)
       if (data.topic && data.msg) {
         setSubscribedTopics(prevTopics => 
           prevTopics.map(t => 
@@ -47,7 +46,6 @@ export const ROSProvider = ({ children }) => {
       ws.onopen = () => {
         console.log('WebSocket connected');
         setIsConnected(true);
-        // Store all connection info including videoPort
         setConnectionInfo({ 
           ip: ip, 
           rosbridgePort: rosbridgePort, 
@@ -79,14 +77,12 @@ export const ROSProvider = ({ children }) => {
       return;
     }
 
-    // Check if already subscribed
     const alreadySubscribed = subscribedTopics.some(t => t.topic === topicName);
     if (alreadySubscribed) {
       console.log('Already subscribed to', topicName);
       return;
     }
 
-    // Send subscribe message to rosbridge
     const subscribeMsg = {
       op: 'subscribe',
       topic: topicName,
@@ -95,7 +91,6 @@ export const ROSProvider = ({ children }) => {
 
     wsRef.current.send(JSON.stringify(subscribeMsg));
 
-    // Add to subscribed topics list
     setSubscribedTopics(prev => [
       ...prev,
       {

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useROS } from '../context/ROSContext';
 import { theme } from '../theme/colors';
+import Constants from 'expo-constants';
 
 export default function ConnectScreen({ navigation }) {
   const { connectToROS } = useROS();
@@ -10,6 +11,8 @@ export default function ConnectScreen({ navigation }) {
   const [videoPort, setVideoPort] = useState('8080');
   const [error, setError] = useState('');
   const [connecting, setConnecting] = useState(false);
+
+  const isDev = __DEV__ || Constants.appOwnership === 'expo';
 
   const handleConnect = async () => {
     setError('');
@@ -31,23 +34,33 @@ export default function ConnectScreen({ navigation }) {
       await connectToROS(ip, rosbridgePort, videoPort);
       navigation.navigate('Dashboard');
     } catch (err) {
-      setError('Connection failed. Please check the IP and port.');
+      setError('Connection failed. Please check the IP and Port.');
       console.error(err);
     } finally {
       setConnecting(false);
     }
   };
 
+  const handleDevSkip = () => {
+    console.log('DEV MODE: Skipping connection validation');
+    navigation.navigate('Dashboard');
+  };
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <View style={styles.header}>
-        <Text style={styles.title}>ROSground</Text>
+        <Text style={styles.title}>ROS Monitor</Text>
         <Text style={styles.subtitle}>Connect to ROS Bridge</Text>
+        {isDev && (
+          <View style={styles.devBadge}>
+            <Text style={styles.devBadgeText}>DEV MODE</Text>
+          </View>
+        )}
       </View>
 
       <View style={styles.formContainer}>
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>ROBOT IP</Text>
+          <Text style={styles.label}>ROBOT IP / COMPUTER IP</Text>
           <TextInput
             style={styles.input}
             value={ip}
@@ -94,9 +107,27 @@ export default function ConnectScreen({ navigation }) {
           </Text>
         </TouchableOpacity>
 
+        {/* Development mode skip button */}
+        {isDev && (
+          <TouchableOpacity
+            style={styles.devButton}
+            onPress={handleDevSkip}
+          >
+            <Text style={styles.devButtonText}>SKIP (DEV ONLY)</Text>
+          </TouchableOpacity>
+        )}
+
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
       </View>
-    </View>
+
+      <View style={styles.footer}>
+        <Text style={styles.version}>Version 1.0.0</Text>
+        <Text style={styles.disclaimer}>
+          Ensure your device and robot are on the same network.{'\n'}
+          This app requires rosbridge_server running on your robot.
+        </Text>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -104,6 +135,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.background.primary,
+  },
+  contentContainer: {
+    flexGrow: 1,
+    justifyContent: 'space-between',
   },
   header: {
     paddingTop: 60,
@@ -120,6 +155,19 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: theme.text.secondary,
+  },
+  devBadge: {
+    marginTop: 10,
+    backgroundColor: theme.accent.warning,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 4,
+  },
+  devBadgeText: {
+    color: '#000',
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 1,
   },
   formContainer: {
     paddingHorizontal: 20,
@@ -160,10 +208,42 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: 1,
   },
+  devButton: {
+    backgroundColor: theme.accent.warning,
+    borderRadius: 8,
+    padding: 12,
+    alignItems: 'center',
+    marginTop: 12,
+  },
+  devButtonText: {
+    color: '#000',
+    fontSize: 14,
+    fontWeight: '700',
+    letterSpacing: 1,
+  },
   errorText: {
     color: theme.accent.error,
     marginTop: 16,
     textAlign: 'center',
     fontSize: 14,
+  },
+  footer: {
+    paddingHorizontal: 20,
+    paddingBottom: 30,
+    paddingTop: 20,
+    alignItems: 'center',
+  },
+  version: {
+    fontSize: 12,
+    color: theme.text.muted,
+    marginBottom: 10,
+    fontWeight: '600',
+  },
+  disclaimer: {
+    fontSize: 11,
+    color: theme.text.muted,
+    textAlign: 'center',
+    lineHeight: 16,
+    opacity: 0.7,
   },
 });

@@ -31,7 +31,6 @@ export default function TopicBrowserScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Add Topic</Text>
         <Text style={styles.subtitle}>
           Manually enter the topic name and type to subscribe
         </Text>

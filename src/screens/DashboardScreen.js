@@ -11,7 +11,6 @@ export default function DashboardScreen({ navigation }) {
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerRow}>
-          <Text style={styles.headerTitle}>Dashboard</Text>
           <View style={styles.statusBadge}>
             <View style={[styles.statusDot, { backgroundColor: isConnected ? theme.status.connected : theme.status.disconnected }]} />
             <Text style={styles.statusText}>
@@ -214,7 +213,8 @@ const styles = StyleSheet.create({
     borderColor: theme.border.subtle,
   },
   buttonContainer: {
-    padding: 16,
+    padding: 18,
+    paddingBottom: 30,
     backgroundColor: theme.background.secondary,
     borderTopWidth: 2,
     borderTopColor: theme.border.primary,

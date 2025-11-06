@@ -51,6 +51,7 @@ export default function App() {
             name="TopicBrowser" 
             component={TopicBrowserScreen}
             options={{ 
+              title: 'Add Topic',
               presentation: 'modal',
             }}
           />
