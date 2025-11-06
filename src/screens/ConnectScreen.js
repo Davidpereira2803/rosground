@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, useWindowDimensions } from 'react-native';
 import { useROS } from '../context/ROSContext';
 import { theme } from '../theme/colors';
 import Constants from 'expo-constants';
@@ -11,6 +11,10 @@ export default function ConnectScreen({ navigation }) {
   const [videoPort, setVideoPort] = useState('8080');
   const [error, setError] = useState('');
   const [connecting, setConnecting] = useState(false);
+
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
+  const sideGutter = isLandscape ? Math.max(24, Math.round(width * 0.08)) : 20;
 
   const isDev = __DEV__ || Constants.appOwnership === 'expo';
 
@@ -48,7 +52,7 @@ export default function ConnectScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingHorizontal: sideGutter }]}>
         <Text style={styles.title}>ROS Monitor</Text>
         <Text style={styles.subtitle}>Connect to ROS Bridge</Text>
         {isDev && (
@@ -58,7 +62,7 @@ export default function ConnectScreen({ navigation }) {
         )}
       </View>
 
-      <View style={styles.formContainer}>
+      <View style={[styles.formContainer, { paddingHorizontal: sideGutter }]}>
         <View style={styles.inputContainer}>
           <Text style={styles.label}>ROBOT IP / COMPUTER IP</Text>
           <TextInput
@@ -120,7 +124,7 @@ export default function ConnectScreen({ navigation }) {
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
       </View>
 
-      <View style={styles.footer}>
+      <View style={[styles.footer, { paddingHorizontal: sideGutter }]}>
         <Text style={styles.version}>Version 1.0.0</Text>
         <Text style={styles.disclaimer}>
           Ensure your device and robot are on the same network.{'\n'}

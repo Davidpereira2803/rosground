@@ -46,13 +46,16 @@ export default function App() {
           <Stack.Screen 
             name="Dashboard" 
             component={DashboardScreen}
+            options={{
+              headerShown: false,
+            }}
           />
           <Stack.Screen 
             name="TopicBrowser" 
             component={TopicBrowserScreen}
             options={{ 
               title: 'Add Topic',
-              presentation: 'modal',
+              headerShown: false,
             }}
           />
         </Stack.Navigator>
