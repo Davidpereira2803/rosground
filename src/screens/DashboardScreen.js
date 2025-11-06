@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.background.secondary,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    paddingTop: 30,
+    paddingTop: 40,
     borderBottomWidth: 2,
     borderBottomColor: theme.border.primary,
   },

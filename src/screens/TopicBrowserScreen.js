@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 20,
-    paddingTop: 30,
+    paddingTop: 40,
     backgroundColor: theme.background.secondary,
     borderBottomWidth: 2,
     borderBottomColor: theme.border.primary,
@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: theme.text.secondary,
     lineHeight: 20,
+    textAlign: 'center',
   },
   scroll: {
     flex: 1,
