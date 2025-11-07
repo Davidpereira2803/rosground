@@ -52,7 +52,7 @@ ROSground is an Expo-managed React Native application that allows you to:
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/Davidpereira2803/rosground
    cd rosground
    ```
 
@@ -172,37 +172,6 @@ Ensure your mobile device and robot are on the same network:
 - Verify topic name and type are correct
 - Check that the topic is actively publishing: `ros2 topic echo /topic_name`
 - Ensure message type matches exactly (including namespace)
-
-### App Crashes
-
-- Clear Metro bundler cache: `npx expo start -c`
-- Reinstall dependencies: `rm -rf node_modules && npm install`
-- Check console for error messages
-
-## Development
-
-### Running in Development Mode
-
-```bash
-npx expo start
-```
-
-Options:
-- Press `a` to open on Android emulator
-- Press `i` to open on iOS simulator
-- Scan QR code for physical device testing
-
-### Building for Production
-
-```bash
-# Android
-eas build --platform android
-
-# iOS
-eas build --platform ios
-```
-
-Refer to [Expo documentation](https://docs.expo.dev/build/setup/) for build configuration.
 
 ## Technology Stack
 
