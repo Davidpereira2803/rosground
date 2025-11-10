@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ROS Monitor — Monitor ROS topics on your phone</title>
+  <meta name="description" content="ROS Monitor is a lightweight mobile app to subscribe to ROS/ROS2 topics and visualize data in real time. Learn how it works and how to set it up in minutes." />
+  <meta name="author" content="Your Name" />
+  <meta property="og:title" content="ROS Monitor — Monitor ROS topics on your phone" />
+  <meta property="og:description" content="Subscribe to ROS topics, view messages, and see camera feeds on your phone. Simple setup using rosbridge + optional video server." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="assets/favicon.png" />
+  <link rel="stylesheet" href="styles.css" />
+
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <div class="brand"><img src="assets/favicon.png" alt="ROS Monitor logo" /><span>ROS Monitor</span></div>
+      <nav class="menu" id="menu">
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="#setup">Setup</a>
+        <a href="#usage">How to Use</a>
+        <a href="#screens">Screens</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero" id="about">
+      <span class="badge">Open source • ROS/ROS2</span>
+      <h1>Monitor ROS topics on your phone — fast.</h1>
+      <p>
+        ROS Monitor is a minimal mobile client that lets you subscribe to topics via <code>rosbridge</code> and visualize messages (std_msgs, geometry, sensor feeds, and more). Optional HTTP video streaming lets you preview camera topics.
+      </p>
+      <div class="cta">
+        <a class="btn" href="https://github.com/Davidpereira2803/rosground" target="_blank" rel="noreferrer">View on GitHub</a>
+        <a class="btn secondary" href="#setup">Quick Start</a>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <h2>Features</h2>
+      <div class="grid">
+        <div class="card"><h3>Topic Subscribe</h3><p>Connect to <code>rosbridge_websocket</code> and subscribe to one or more topics.</p></div>
+        <div class="card"><h3>Message Viewer</h3><p>Pretty JSON view with type badges, rate, and last updated time.</p></div>
+        <div class="card"><h3>Camera Preview</h3><p>Optional HTTP MJPEG server to view camera feeds with low latency.</p></div>
+        <div class="card"><h3>Saved Profiles</h3><p>Store common sets of topics for quick access in the app.</p></div>
+        <div class="card"><h3>ROS1 & ROS2</h3><p>Works with ROS 1 (rosbridge_suite) and ROS 2 via rosbridge.</p></div>
+        <div class="card"><h3>Open Source</h3><p>MIT-licensed. PRs welcome!</p></div>
+      </div>
+    </section>
+
+    <section class="section" id="setup">
+      <h2>Quick Start</h2>
+      <div class="two">
+        <div>
+          <div class="steps">
+            <div class="step"><div class="dot">1</div>
+                <div>
+                    <strong>Install rosbridge</strong>
+                    <pre><code>
+# ROS 2 (Debian-based)
+sudo apt install ros-${ROS_DISTRO}-rosbridge-suite
+# or use:  ros2 launch rosbridge_server rosbridge_websocket.launch.py
+                    </code></pre>
+                </div>
+            </div>
+            <div class="step"><div class="dot">2</div>
+                <div>
+                    <strong>Run rosbridge websocket</strong>
+                    <pre><code>ros2 launch rosbridge_server rosbridge_websocket.launch.py</code></pre>
+                </div>
+            </div>
+            <div class="step"><div class="dot">3</div>
+                <div>
+                    <strong>(Optional) Start video HTTP server</strong>
+                    <pre><code>python3 video_http_server.py --topic /camera/image_raw --port 8080</code></pre>
+                    <small class="muted">Adjust <code>--topic</code> and <code>--port</code> as needed.</small>
+                </div>
+            </div>
+            <div class="step"><div class="dot">4</div>
+                <div>
+                    <strong>Connect from the app</strong>
+                    <p>Enter your machine's IP and port (default <code>9090</code>) in the app settings, pick topics, and you're set.</p>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card">
+            <h3>Example network</h3>
+            <p>Phone and ROS machine must be on the same network (e.g., Wi-Fi). If using a firewall, allow inbound 9090 (websocket) and your video port (e.g., 8080).</p>
+            <pre><code>
+# find host IP
+ip a | grep inet   # Linux
+ipconfig           # Windows
+
+# basic check from phone
+http://YOUR_HOST:9090/
+            </code></pre>
+          </div>
+          <div class="card">
+            <h3>Support Matrix</h3>
+            <ul>
+              <li>ROS1: rosbridge_suite</li>
+              <li>ROS2: Humble → Jazzy</li>
+              <li>Platforms: Android (iOS planned)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="usage">
+      <h2>How to Use</h2>
+      <ol>
+        <li>Open the app and add a connection (ws://HOST:9090).</li>
+        <li>Browse available topics, choose ones to monitor, and save as a profile.</li>
+        <li>Tap a topic to open the live viewer; for camera topics, open the Video tab.</li>
+        <li>Share a JSON export of your profile to teammates.</li>
+      </ol>
+      <div class="card" style="margin-top:12px">
+        <h3>Example profile JSON</h3>
+        <pre><code>
+{
+  "name": "Tello Demo",
+  "host": "192.168.0.42",
+  "port": 9090,
+  "topics": ["/tello/imu", "/tello/image_raw", "/tf"]
+}
+        </code></pre>
+      </div>
+    </section>
+
+    <section class="section" id="screens">
+      <h2>Screenshots</h2>
+      <div class="gallery">
+        <img src="assets/screen-1.png" alt="Connection setup screen" />
+        <img src="assets/screen-2.png" alt="Topics list" />
+        <img src="assets/screen-3.png" alt="Message viewer" />
+      </div>
+      <p style="color:var(--muted);margin-top:8px">Replace the images above with your own screenshots placed under <code>assets/</code>.</p>
+    </section>
+
+    <section class="section faq" id="faq">
+      <h2>FAQ</h2>
+      <details><summary>Which message types are supported?</summary>
+        <p>Common std_msgs, geometry, sensor messages render as JSON. Custom messages display raw JSON.</p>
+      </details>
+      <details><summary>How do I report a bug or request a feature?</summary>
+        <p>Please open an issue on <a href="https://github.com/Davidpereira2803/rosground" target="_blank" rel="noreferrer">GitHub</a>.</p>
+      </details>
+    </section>
+
+    <section class="section" id="contact">
+      <h2>Contact</h2>
+      <div class="two">
+        <div class="card">
+          <h3>Get in touch</h3>
+          <p>Questions, partnerships? Email <a href="mailto:perda2803@gmail.com">perda2803@gmail.com</a>.</p>
+        </div>
+        <div class="card">
+          <h3>Privacy</h3>
+          <p>ROS Monitor doesn’t collect personal data. Network addresses are stored locally on your device.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap">
+        <span>© <span id="y"></span> ROS Monitor — MIT License</span>
+        <span><a href="https://github.com/Davidpereira2803/rosground" target="_blank" rel="noreferrer">GitHub</a> · <a href="#faq">FAQ</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // year
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
