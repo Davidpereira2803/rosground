@@ -36,7 +36,7 @@
       <span class="badge">Open source • ROS/ROS2</span>
       <h1>Monitor ROS topics on your phone — fast.</h1>
       <p>
-        ROS Monitor is a minimal mobile client that lets you subscribe to topics via <code>rosbridge</code> and visualize messages (std_msgs, geometry, sensor feeds, and more). Optional HTTP video streaming lets you preview camera topics.
+        ROS Monitor is a minimal mobile client that lets you subscribe to topics via <code>rosbridge</code> and visualize messages (std_msgs, geometry, sensor feeds, and more). Optional HTTP video streaming lets you preview camera topics. Avoid using an enourmous amount of terminals to visualize data—use your phone instead!
       </p>
       <div class="cta">
         <a class="btn" href="https://github.com/Davidpereira2803/rosground" target="_blank" rel="noreferrer">View on GitHub</a>
@@ -50,7 +50,6 @@
         <div class="card"><h3>Topic Subscribe</h3><p>Connect to <code>rosbridge_websocket</code> and subscribe to one or more topics.</p></div>
         <div class="card"><h3>Message Viewer</h3><p>Pretty JSON view with type badges, rate, and last updated time.</p></div>
         <div class="card"><h3>Camera Preview</h3><p>Optional HTTP MJPEG server to view camera feeds with low latency.</p></div>
-        <div class="card"><h3>Saved Profiles</h3><p>Store common sets of topics for quick access in the app.</p></div>
         <div class="card"><h3>ROS1 & ROS2</h3><p>Works with ROS 1 (rosbridge_suite) and ROS 2 via rosbridge.</p></div>
         <div class="card"><h3>Open Source</h3><p>MIT-licensed. PRs welcome!</p></div>
       </div>
@@ -64,11 +63,8 @@
             <div class="step"><div class="dot">1</div>
                 <div>
                     <strong>Install rosbridge</strong>
-                    <pre><code>
-# ROS 2 (Debian-based)
-sudo apt install ros-${ROS_DISTRO}-rosbridge-suite
-# or use:  ros2 launch rosbridge_server rosbridge_websocket.launch.py
-                    </code></pre>
+                    <pre><code># ROS 2 (Debian-based)
+sudo apt install ros-${ROS_DISTRO}-rosbridge-suite</code></pre>
                 </div>
             </div>
             <div class="step"><div class="dot">2</div>
@@ -80,6 +76,7 @@ sudo apt install ros-${ROS_DISTRO}-rosbridge-suite
             <div class="step"><div class="dot">3</div>
                 <div>
                     <strong>(Optional) Start video HTTP server</strong>
+                    <p> Download the file <strong>video_http_server.py</strong> from <a href="https://github.com/Davidpereira2803/rosground/blob/master/video__http_server.py" target="_blank" rel="noreferrer">GitHub</a>.</p>
                     <pre><code>python3 video_http_server.py --topic /camera/image_raw --port 8080</code></pre>
                     <small class="muted">Adjust <code>--topic</code> and <code>--port</code> as needed.</small>
                 </div>
@@ -96,14 +93,12 @@ sudo apt install ros-${ROS_DISTRO}-rosbridge-suite
           <div class="card">
             <h3>Example network</h3>
             <p>Phone and ROS machine must be on the same network (e.g., Wi-Fi). If using a firewall, allow inbound 9090 (websocket) and your video port (e.g., 8080).</p>
-            <pre><code>
-# find host IP
+            <pre><code># find host IP
 ip a | grep inet   # Linux
 ipconfig           # Windows
 
 # basic check from phone
-http://YOUR_HOST:9090/
-            </code></pre>
+http://YOUR_HOST:9090/</code></pre>
           </div>
           <div class="card">
             <h3>Support Matrix</h3>
@@ -120,22 +115,14 @@ http://YOUR_HOST:9090/
     <section class="section" id="usage">
       <h2>How to Use</h2>
       <ol>
-        <li>Open the app and add a connection (ws://HOST:9090).</li>
+        <li>Ensure rosbridge websocket is running on your ROS machine.</li>
+        <li>(Optional) Start the video HTTP server for camera topics.</li>
+        <li>Make sure your phone and ROS machine are on the same network.</li>
+        <li>Get your IP-Address.</li>
+        <li>Open the app and add a connection (ws://IP-Address:9090).</li>
         <li>Browse available topics, choose ones to monitor, and save as a profile.</li>
         <li>Tap a topic to open the live viewer; for camera topics, open the Video tab.</li>
-        <li>Share a JSON export of your profile to teammates.</li>
       </ol>
-      <div class="card" style="margin-top:12px">
-        <h3>Example profile JSON</h3>
-        <pre><code>
-{
-  "name": "Tello Demo",
-  "host": "192.168.0.42",
-  "port": 9090,
-  "topics": ["/tello/imu", "/tello/image_raw", "/tf"]
-}
-        </code></pre>
-      </div>
     </section>
 
     <section class="section" id="screens">
@@ -145,7 +132,6 @@ http://YOUR_HOST:9090/
         <img src="assets/screen-2.png" alt="Topics list" />
         <img src="assets/screen-3.png" alt="Message viewer" />
       </div>
-      <p style="color:var(--muted);margin-top:8px">Replace the images above with your own screenshots placed under <code>assets/</code>.</p>
     </section>
 
     <section class="section faq" id="faq">
