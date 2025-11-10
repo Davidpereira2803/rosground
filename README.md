@@ -106,6 +106,10 @@ ROSground is an Expo-managed React Native application that allows you to:
 ```
 rosground/
 ├── App.js                          # Main app entry point with navigation
+├── docs/                           # Documentation in HTML/CSS format
+│   ├── assets/
+│   ├── index.html
+│   └── styles.css
 ├── src/
 │   ├── context/
 │   │   └── ROSContext.js          # WebSocket connection and state management
