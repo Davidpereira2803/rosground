@@ -17,6 +17,7 @@ export const ROSProvider = ({ children }) => {
     videoPort: '',
   });
   const [subscribedTopics, setSubscribedTopics] = useState([]);
+  const [availableTopics, setAvailableTopics] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
   const wsRef = useRef(null);
 
@@ -33,9 +34,62 @@ export const ROSProvider = ({ children }) => {
           )
         );
       }
+
+      if (data.op === 'service_response') {
+        if (data.service === '/rosapi/topics') {
+          const topics = data.values?.topics || [];
+          console.log('Discovered topics:', topics);
+          setAvailableTopics(topics);
+        }
+      }
     } catch (error) {
       console.error('Error parsing WebSocket message:', error);
     }
+  }, []);
+
+  const discoverTopics = useCallback(() => {
+    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+      console.warn('Cannot discover topics: WebSocket not connected');
+      return;
+    }
+
+    const request = {
+      op: 'call_service',
+      service: '/rosapi/topics',
+      args: {}
+    };
+
+    console.log('Requesting topic list...');
+    wsRef.current.send(JSON.stringify(request));
+  }, []);
+
+  const getTopicType = useCallback((topicName, callback) => {
+    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+      console.warn('Cannot get topic type: WebSocket not connected');
+      return;
+    }
+
+    const request = {
+      op: 'call_service',
+      service: '/rosapi/topic_type',
+      args: { topic: topicName }
+    };
+
+    const handleResponse = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.op === 'service_response' && data.service === '/rosapi/topic_type') {
+          const type = data.values?.type || '';
+          callback(type);
+          wsRef.current.removeEventListener('message', handleResponse);
+        }
+      } catch (error) {
+        console.error('Error getting topic type:', error);
+      }
+    };
+
+    wsRef.current.addEventListener('message', handleResponse);
+    wsRef.current.send(JSON.stringify(request));
   }, []);
 
   const connectToROS = (ip, rosbridgePort, videoPort) => {
@@ -53,6 +107,18 @@ export const ROSProvider = ({ children }) => {
         });
         wsRef.current = ws;
         ws.onmessage = handleWebSocketMessage;
+        
+        setTimeout(() => {
+          if (ws.readyState === WebSocket.OPEN) {
+            const request = {
+              op: 'call_service',
+              service: '/rosapi/topics',
+              args: {}
+            };
+            ws.send(JSON.stringify(request));
+          }
+        }, 500);
+        
         resolve(ws);
       };
 
@@ -126,17 +192,21 @@ export const ROSProvider = ({ children }) => {
     }
     setIsConnected(false);
     setSubscribedTopics([]);
+    setAvailableTopics([]);
     setConnectionInfo({ ip: '', rosbridgePort: '', videoPort: '' });
   };
 
   const value = {
     connectionInfo,
     subscribedTopics,
+    availableTopics,
     isConnected,
     connectToROS,
     subscribeToTopic,
     unsubscribeFromTopic,
     disconnect,
+    discoverTopics,
+    getTopicType,
     ws: wsRef.current,
   };
 

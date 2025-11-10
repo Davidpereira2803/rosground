@@ -3,10 +3,45 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions } from
 import { useROS } from '../context/ROSContext';
 import VideoPanel from '../components/VideoPanel';
 import { theme } from '../theme/colors';
+import Constants from 'expo-constants';
 
 export default function DashboardScreen({ navigation }) {
   const { subscribedTopics, connectionInfo, isConnected, unsubscribeFromTopic } = useROS();
   const [isLandscape, setIsLandscape] = useState(false);
+
+  const isDev = __DEV__ || Constants.appOwnership === 'expo';
+
+  const hasVideoStream = isConnected && connectionInfo.ip && connectionInfo.videoPort;
+
+  const mockTopics = isDev ? [
+    {
+      topic: '/battery',
+      type: 'std_msgs/msg/Float32',
+      lastMsg: { data: 85.5 }
+    },
+    {
+      topic: '/cmd_vel',
+      type: 'geometry_msgs/msg/Twist',
+      lastMsg: {
+        linear: { x: 0.5, y: 0.0, z: 0.0 },
+        angular: { x: 0.0, y: 0.0, z: 0.2 }
+      }
+    },
+    {
+      topic: '/odom',
+      type: 'nav_msgs/msg/Odometry',
+      lastMsg: {
+        pose: {
+          position: { x: 1.234, y: 5.678, z: 0.0 },
+          orientation: { x: 0.0, y: 0.0, z: 0.0, w: 1.0 }
+        }
+      }
+    }
+  ] : [];
+
+  const displayTopics = isDev && subscribedTopics.length === 0 
+    ? mockTopics 
+    : subscribedTopics;
 
   useEffect(() => {
     const updateOrientation = () => {
@@ -15,9 +50,7 @@ export default function DashboardScreen({ navigation }) {
     };
 
     updateOrientation();
-
     const subscription = Dimensions.addEventListener('change', updateOrientation);
-
     return () => {
       subscription?.remove();
     };
@@ -40,41 +73,49 @@ export default function DashboardScreen({ navigation }) {
     });
   }, [navigation, isLandscape]);
 
+  const renderTopicCard = (item, index) => (
+    <View key={index} style={[styles.topicWidget, isLandscape && styles.topicWidgetLandscape]}>
+      <View style={styles.topicHeader}>
+        <View style={styles.topicTitleContainer}>
+          <Text style={styles.topicName}>{item.topic}</Text>
+          <Text style={styles.topicType}>{item.type}</Text>
+        </View>
+        {!isDev || subscribedTopics.length > 0 ? (
+          <TouchableOpacity 
+            onPress={() => unsubscribeFromTopic(item.topic)}
+            style={styles.unsubscribeButton}
+          >
+            <Text style={styles.unsubscribeText}>✕</Text>
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.devBadge}>
+            <Text style={styles.devBadgeText}>MOCK</Text>
+          </View>
+        )}
+      </View>
+      <View style={styles.messageContainer}>
+        <Text style={styles.messageLabel}>LATEST MESSAGE</Text>
+        <ScrollView horizontal style={styles.messageScroll}>
+          <Text style={styles.messageText}>
+            {item.lastMsg ? JSON.stringify(item.lastMsg, null, 2) : 'Waiting for data...'}
+          </Text>
+        </ScrollView>
+      </View>
+    </View>
+  );
+
   const renderTopics = () => (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>SUBSCRIBED TOPICS</Text>
       
-      {subscribedTopics.length === 0 ? (
+      {displayTopics.length === 0 ? (
         <View style={styles.emptyContainer}>
           <Text style={styles.emptyText}>No topics subscribed yet</Text>
           <Text style={styles.emptySubtext}>Tap "Add Topic" below to start monitoring</Text>
         </View>
       ) : (
         <View>
-          {subscribedTopics.map((item, index) => (
-            <View key={index} style={styles.topicWidget}>
-              <View style={styles.topicHeader}>
-                <View style={styles.topicTitleContainer}>
-                  <Text style={styles.topicName}>{item.topic}</Text>
-                  <Text style={styles.topicType}>{item.type}</Text>
-                </View>
-                <TouchableOpacity 
-                  onPress={() => unsubscribeFromTopic(item.topic)}
-                  style={styles.unsubscribeButton}
-                >
-                  <Text style={styles.unsubscribeText}>✕</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.messageContainer}>
-                <Text style={styles.messageLabel}>LATEST MESSAGE</Text>
-                <ScrollView horizontal style={styles.messageScroll}>
-                  <Text style={styles.messageText}>
-                    {item.lastMsg ? JSON.stringify(item.lastMsg, null, 2) : 'Waiting for data...'}
-                  </Text>
-                </ScrollView>
-              </View>
-            </View>
-          ))}
+          {displayTopics.map((item, index) => renderTopicCard(item, index))}
         </View>
       )}
     </View>
@@ -109,23 +150,41 @@ export default function DashboardScreen({ navigation }) {
         </View>
       </View>
 
-      <ScrollView style={styles.scrollContainer}>
-        {isLandscape ? (
-          <View style={styles.landscapeContainer}>
-            <View style={styles.landscapeLeft}>
-              <VideoPanel />
-            </View>
-            <View style={styles.landscapeRight}>
-              {renderTopics()}
-            </View>
+      {isLandscape ? (
+        <View style={styles.landscapeContainer}>
+          <View style={[
+            styles.landscapeLeft, 
+            !hasVideoStream && styles.landscapeLeftCompact
+          ]}>
+            <VideoPanel />
           </View>
-        ) : (
+          <View style={styles.landscapeRight}>
+            <Text style={styles.sectionTitle}>SUBSCRIBED TOPICS</Text>
+            {displayTopics.length === 0 ? (
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>No topics subscribed yet</Text>
+                <Text style={styles.emptySubtext}>Tap "+" to start monitoring</Text>
+              </View>
+            ) : (
+              <ScrollView 
+                horizontal 
+                showsHorizontalScrollIndicator={true}
+                style={styles.topicsHorizontalScroll}
+                contentContainerStyle={styles.topicsHorizontalContent}
+              >
+                {displayTopics.map((item, index) => renderTopicCard(item, index))}
+              </ScrollView>
+            )}
+          </View>
+        </View>
+      ) : (
+        <ScrollView style={styles.scrollContainer}>
           <View style={styles.content}>
             <VideoPanel />
             {renderTopics()}
           </View>
-        )}
-      </ScrollView>
+        </ScrollView>
+      )}
 
       {!isLandscape && (
         <View style={styles.buttonContainer}>
@@ -197,16 +256,25 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   landscapeContainer: {
+    flex: 1,
     flexDirection: 'row',
     padding: 16,
   },
   landscapeLeft: {
-    flex: 1,
-    marginRight: 8,
+    width: '40%',
+    marginRight: 16,
+  },
+  landscapeLeftCompact: {
+    width: '25%',
   },
   landscapeRight: {
     flex: 1,
-    marginLeft: 8,
+  },
+  topicsHorizontalScroll: {
+    flex: 1,
+  },
+  topicsHorizontalContent: {
+    paddingRight: 16,
   },
   section: {
     marginTop: 8,
@@ -238,6 +306,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderWidth: 1,
     borderColor: theme.border.primary,
+  },
+  topicWidgetLandscape: {
+    width: 300,
+    marginRight: 12,
+    marginBottom: 0,
   },
   topicHeader: {
     flexDirection: 'row',
@@ -315,5 +388,17 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '700',
     color: theme.text.primary,
+  },
+  devBadge: {
+    backgroundColor: theme.accent.warning,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 4,
+  },
+  devBadgeText: {
+    color: '#000',
+    fontSize: 9,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
 });

@@ -1,12 +1,41 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, FlatList } from 'react-native';
 import { useROS } from '../context/ROSContext';
 import { theme } from '../theme/colors';
 
 export default function TopicBrowserScreen({ navigation }) {
-  const { subscribeToTopic, isConnected } = useROS();
+  const { subscribeToTopic, isConnected, availableTopics, discoverTopics, getTopicType } = useROS();
   const [topicName, setTopicName] = useState('');
   const [topicType, setTopicType] = useState('');
+  const [showAutoDetect, setShowAutoDetect] = useState(true);
+  const [filteredTopics, setFilteredTopics] = useState([]);
+
+  useEffect(() => {
+    if (isConnected && availableTopics.length === 0) {
+      discoverTopics();
+    }
+  }, [isConnected]);
+
+  useEffect(() => {
+    if (topicName.trim()) {
+      setFilteredTopics(
+        availableTopics.filter(topic => 
+          topic.toLowerCase().includes(topicName.toLowerCase())
+        )
+      );
+    } else {
+      setFilteredTopics(availableTopics);
+    }
+  }, [topicName, availableTopics]);
+
+  const handleTopicSelect = (topic) => {
+    setTopicName(topic);
+    setShowAutoDetect(false);
+    
+    getTopicType(topic, (type) => {
+      setTopicType(type);
+    });
+  };
 
   const handleSubscribe = () => {
     if (!topicName.trim()) {
@@ -28,11 +57,15 @@ export default function TopicBrowserScreen({ navigation }) {
     navigation.goBack();
   };
 
+  const handleRefresh = () => {
+    discoverTopics();
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.subtitle}>
-          Manually enter the topic name and type to subscribe
+          Select from available topics or enter manually
         </Text>
       </View>
 
@@ -42,12 +75,59 @@ export default function TopicBrowserScreen({ navigation }) {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.formContainer}>
+          {/* Auto-detect section */}
+          {isConnected && (
+            <View style={styles.autoDetectSection}>
+              <View style={styles.autoDetectHeader}>
+                <Text style={styles.sectionTitle}>AVAILABLE TOPICS ({availableTopics.length})</Text>
+                <TouchableOpacity onPress={handleRefresh} style={styles.refreshButton}>
+                  <Text style={styles.refreshText}>↻ Refresh</Text>
+                </TouchableOpacity>
+              </View>
+
+              {showAutoDetect && filteredTopics.length > 0 && (
+                <View style={styles.topicList}>
+                  <FlatList
+                    data={filteredTopics.slice(0, 10)}
+                    keyExtractor={(item) => item}
+                    scrollEnabled={false}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        style={styles.topicItem}
+                        onPress={() => handleTopicSelect(item)}
+                      >
+                        <Text style={styles.topicItemText}>{item}</Text>
+                      </TouchableOpacity>
+                    )}
+                  />
+                  {filteredTopics.length > 10 && (
+                    <Text style={styles.moreTopicsHint}>
+                      + {filteredTopics.length - 10} more topics...
+                    </Text>
+                  )}
+                </View>
+              )}
+
+              {availableTopics.length === 0 && (
+                <Text style={styles.noTopicsText}>
+                  No topics detected. Make sure rosapi is running.
+                </Text>
+              )}
+            </View>
+          )}
+
+          {/* Manual input section */}
+          <Text style={styles.sectionTitle}>MANUAL ENTRY</Text>
+
           <View style={styles.inputContainer}>
             <Text style={styles.label}>TOPIC NAME</Text>
             <TextInput
               style={styles.input}
               value={topicName}
-              onChangeText={setTopicName}
+              onChangeText={(text) => {
+                setTopicName(text);
+                setShowAutoDetect(true);
+              }}
               placeholder="e.g. /battery"
               placeholderTextColor={theme.text.placeholder}
               autoCapitalize="none"
@@ -105,12 +185,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: theme.border.primary,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: theme.text.primary,
-    marginBottom: 8,
-  },
   subtitle: {
     fontSize: 14,
     color: theme.text.secondary,
@@ -125,6 +199,60 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     padding: 20,
+  },
+  autoDetectSection: {
+    marginBottom: 24,
+  },
+  autoDetectHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  sectionTitle: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: theme.text.accent,
+    letterSpacing: 1,
+    marginBottom: 12,
+  },
+  refreshButton: {
+    padding: 6,
+  },
+  refreshText: {
+    fontSize: 14,
+    color: theme.accent.primary,
+    fontWeight: '600',
+  },
+  topicList: {
+    backgroundColor: theme.background.card,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: theme.border.primary,
+    maxHeight: 300,
+  },
+  topicItem: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: theme.border.subtle,
+  },
+  topicItemText: {
+    fontSize: 14,
+    color: theme.text.primary,
+  },
+  moreTopicsHint: {
+    padding: 10,
+    fontSize: 12,
+    color: theme.text.muted,
+    textAlign: 'center',
+    fontStyle: 'italic',
+  },
+  noTopicsText: {
+    fontSize: 13,
+    color: theme.text.muted,
+    fontStyle: 'italic',
+    textAlign: 'center',
+    padding: 16,
   },
   inputContainer: {
     marginBottom: 24,

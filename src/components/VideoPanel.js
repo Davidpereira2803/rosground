@@ -13,12 +13,16 @@ export default function VideoPanel() {
     return null;
   }, [connectionInfo.ip, connectionInfo.videoPort]);
 
-  if (!isConnected || !streamUrl) {
+  const hasStream = isConnected && streamUrl;
+
+  if (!hasStream) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>LIVE VIDEO</Text>
-        <View style={styles.notConnectedContainer}>
-          <Text style={styles.notConnectedText}>Video - Not connected</Text>
+      <View style={styles.containerCompact}>
+        <View style={styles.headerRow}>
+          <Text style={styles.title}>LIVE VIDEO</Text>
+          <View style={styles.disconnectedBadge}>
+            <Text style={styles.disconnectedBadgeText}>Not Available</Text>
+          </View>
         </View>
       </View>
     );
@@ -48,31 +52,44 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 20,
   },
+  containerCompact: {
+    backgroundColor: theme.background.card,
+    borderColor: theme.border.primary,
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 16,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   title: {
     fontSize: 12,
     fontWeight: '700',
     color: theme.text.accent,
-    marginBottom: 12,
     letterSpacing: 1,
   },
-  notConnectedContainer: {
-    height: 200,
+  disconnectedBadge: {
     backgroundColor: theme.background.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
     borderWidth: 1,
     borderColor: theme.border.subtle,
   },
-  notConnectedText: {
+  disconnectedBadgeText: {
     color: theme.text.muted,
-    fontSize: 14,
+    fontSize: 10,
+    fontWeight: '600',
   },
   videoContainer: {
     borderRadius: 8,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: theme.border.subtle,
+    marginTop: 12,
   },
   videoImage: {
     width: '100%',
