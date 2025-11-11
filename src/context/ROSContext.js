@@ -185,6 +185,35 @@ export const ROSProvider = ({ children }) => {
     console.log('Unsubscribed from', topicName);
   };
 
+  const advertiseTopic = (topicName, topicType) => {
+    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
+    wsRef.current.send(JSON.stringify({
+      op: 'advertise',
+      topic: topicName,
+      type: topicType,
+    }));
+    console.log('Advertised', topicName);
+  };
+
+  const unadvertiseTopic = (topicName) => {
+    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
+    wsRef.current.send(JSON.stringify({
+      op: 'unadvertise',
+      topic: topicName,
+    }));
+    console.log('Unadvertised', topicName);
+  };
+
+  const publishMessage = (topicName, msgObj) => {
+    if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) return;
+    wsRef.current.send(JSON.stringify({
+      op: 'publish',
+      topic: topicName,
+      msg: msgObj,
+    }));
+    console.log('Published message to', topicName);
+  };
+
   const disconnect = () => {
     if (wsRef.current) {
       wsRef.current.close();
@@ -207,6 +236,9 @@ export const ROSProvider = ({ children }) => {
     disconnect,
     discoverTopics,
     getTopicType,
+    advertiseTopic,
+    unadvertiseTopic,
+    publishMessage,
     ws: wsRef.current,
   };
 

@@ -6,6 +6,7 @@ import { ROSProvider } from './src/context/ROSContext';
 import ConnectScreen from './src/screens/ConnectScreen';
 import DashboardScreen from './src/screens/DashboardScreen';
 import TopicBrowserScreen from './src/screens/TopicBrowserScreen';
+import PublishScreen from './src/screens/PublishScreen';
 import { theme } from './src/theme/colors';
 
 const Stack = createNativeStackNavigator();
@@ -55,6 +56,15 @@ export default function App() {
             component={TopicBrowserScreen}
             options={{ 
               title: 'Add Topic',
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Publish"
+            component={PublishScreen}
+            options={{ 
+              title: 'Publish',
+              presentation: 'modal' ,
               headerShown: false,
             }}
           />

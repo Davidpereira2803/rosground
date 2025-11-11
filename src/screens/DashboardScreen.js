@@ -137,15 +137,29 @@ export default function DashboardScreen({ navigation }) {
             </Text>
           </View>
 
+          {/* Right: icon actions in landscape */}
           {isLandscape && (
-            <TouchableOpacity
-              onPress={() => navigation.navigate('TopicBrowser')}
-              style={styles.headerIconButton}
-              accessibilityRole="button"
-              accessibilityLabel="Add Topic"
-            >
-              <Text style={styles.headerIconText}>+</Text>
-            </TouchableOpacity>
+            <View style={styles.headerActions}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('TopicBrowser')}
+                style={styles.headerIconButton}
+                accessibilityRole="button"
+                accessibilityLabel="Add Topic"
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <Text style={styles.headerIconText}>+</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => navigation.navigate('Publish')}
+                style={[styles.headerIconButton, styles.headerIconButtonRight]}
+                accessibilityRole="button"
+                accessibilityLabel="Publish Test"
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+              >
+                <Text style={styles.headerIconText}>↑</Text>
+              </TouchableOpacity>
+            </View>
           )}
         </View>
       </View>
@@ -186,14 +200,24 @@ export default function DashboardScreen({ navigation }) {
         </ScrollView>
       )}
 
+      {/* Bottom actions: only in portrait */}
       {!isLandscape && (
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => navigation.navigate('TopicBrowser')}
-          >
-            <Text style={styles.addButtonText}>+ ADD TOPIC</Text>
-          </TouchableOpacity>
+          <View style={styles.buttonRow}>
+            <TouchableOpacity
+              style={[styles.actionButton, styles.buttonLeft]}
+              onPress={() => navigation.navigate('TopicBrowser')}
+            >
+              <Text style={styles.actionButtonText}>ADD TOPIC</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.actionButton, styles.buttonRight]}
+              onPress={() => navigation.navigate('Publish')}
+            >
+              <Text style={styles.actionButtonText}>PUBLISH TEST</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
     </View>
@@ -368,21 +392,34 @@ const styles = StyleSheet.create({
     borderTopWidth: 2,
     borderTopColor: theme.border.primary,
   },
-  addButton: {
+  buttonRow: {
+    flexDirection: 'row',
+  },
+  actionButton: {
+    flex: 1,
     backgroundColor: theme.accent.primary,
     borderRadius: 8,
     padding: 16,
     alignItems: 'center',
   },
-  addButtonText: {
+  buttonLeft: { marginRight: 8 },
+  buttonRight: { marginLeft: 8 },
+  actionButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '700',
     letterSpacing: 1,
   },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   headerIconButton: {
     paddingHorizontal: 12,
     paddingVertical: 6,
+  },
+  headerIconButtonRight: {
+    marginLeft: 8,
   },
   headerIconText: {
     fontSize: 22,
