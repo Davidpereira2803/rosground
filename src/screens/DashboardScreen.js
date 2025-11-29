@@ -4,6 +4,7 @@ import { useROS } from '../context/ROSContext';
 import VideoPanel from '../components/VideoPanel';
 import { theme } from '../theme/colors';
 import Constants from 'expo-constants';
+import { AdBanner } from '../components/AdBanner';
 
 export default function DashboardScreen({ navigation }) {
   const { subscribedTopics, connectionInfo, isConnected, unsubscribeFromTopic } = useROS();
@@ -220,6 +221,7 @@ export default function DashboardScreen({ navigation }) {
           </View>
         </View>
       )}
+      <AdBanner />
     </View>
   );
 }
