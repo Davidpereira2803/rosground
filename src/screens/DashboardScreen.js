@@ -221,7 +221,7 @@ export default function DashboardScreen({ navigation }) {
           </View>
         </View>
       )}
-      <AdBanner />
+      {/* <AdBanner /> */}
     </View>
   );
 }
