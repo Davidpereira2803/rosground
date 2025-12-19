@@ -171,7 +171,6 @@ export default function DashboardScreen({ navigation }) {
             styles.landscapeLeft, 
             !hasVideoStream && styles.landscapeLeftCompact
           ]}>
-            <VideoPanel />
           </View>
           <View style={styles.landscapeRight}>
             <Text style={styles.sectionTitle}>SUBSCRIBED TOPICS</Text>
@@ -221,7 +220,6 @@ export default function DashboardScreen({ navigation }) {
           </View>
         </View>
       )}
-      {/* <AdBanner /> */}
     </View>
   );
 }
