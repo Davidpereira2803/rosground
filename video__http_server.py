@@ -15,16 +15,32 @@ import numpy as np
 class FrameBuffer:
     """Thread-safe buffer for latest JPEG frame."""
     def __init__(self):
+        """
+        Docstring for __init__
+        
+        :param self: Description
+        """
         self._lock = threading.Lock()
         self._jpg = None
 
     def update_from_bgr(self, frame_bgr):
+        """
+        Docstring for update_from_bgr
+        
+        :param self: Description
+        :param frame_bgr: Description
+        """
         ok, buf = cv2.imencode('.jpg', frame_bgr)
         if ok:
             with self._lock:
                 self._jpg = buf.tobytes()
 
     def get(self):
+        """
+        Docstring for get
+        
+        :param self: Description
+        """
         with self._lock:
             return self._jpg
         
@@ -33,6 +49,13 @@ frame_buffer = FrameBuffer()
 class ImageSubscriber(Node):
     """Subscribes to a ROS2 image topic and keeps the lastest frame in encoded as JPEG in frame_buffer."""
     def __init__(self, topic_name: str):
+        """
+        Docstring for __init__
+        
+        :param self: Description
+        :param topic_name: Description
+        :type topic_name: str
+        """
         super().__init__('video_http_server_node')
         self.topic_name = topic_name
         self.get_logger().info(f'Subscribing to image topic: {self.topic_name}')
@@ -44,6 +67,13 @@ class ImageSubscriber(Node):
         )
 
     def image_callback(self, msg: Image):
+        """
+        Docstring for image_callback
+        
+        :param self: Description
+        :param msg: Description
+        :type msg: Image
+        """
         # convert sensor_msgs/Image to OpenCV BGR image
         h = msg.height
         w = msg.width
@@ -59,6 +89,11 @@ class ImageSubscriber(Node):
 class MJPEGRequestHandler(BaseHTTPRequestHandler):
     """Serves multipart/x-mixed-replace MJPEG stream at /stream."""
     def do_GET(self):
+        """
+        Docstring for do_GET
+        
+        :param self: Description
+        """
         if self.path != '/stream':
             self.send_error(404)
             self.end_headers()
@@ -91,13 +126,21 @@ class MJPEGRequestHandler(BaseHTTPRequestHandler):
             pass
 
 def start_http_server(port: int):
-    """Start HTTP server in a background thread."""
+    """
+    Start HTTP server in a background thread.
+    
+    :param port: TCP port for the HTTP MJPEG server
+    :type port: int
+    """
     server =HTTPServer(('', port), MJPEGRequestHandler)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
     return server
 
 def main():
+    """
+    Main entry point for the ROS2 -> MJPEG HTTP bridge.
+    """
     parser = argparse.ArgumentParser(description='ROS2 -> MJPEG HTTP bridge')
     parser.add_argument(
         '--topic',
