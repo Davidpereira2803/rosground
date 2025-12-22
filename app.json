@@ -35,6 +35,11 @@
           "userTrackingPermission": "This identifier will be used to deliver personalized ads to you."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "80436079-dfd4-4547-b7fb-d264fa1e6fd2"
+      }
+    }
   }
 }
