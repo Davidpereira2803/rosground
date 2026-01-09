@@ -133,7 +133,7 @@ export default function ConnectScreen({ navigation }) {
         </Text>
       </View>
 
-      <AdBanner />
+      {/*<AdBanner />*/}
     </ScrollView>
   );
 }
