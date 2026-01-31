@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "ROS Ground",
-    "slug": "rosground",
+    "name": "ROS Monitor",
+    "slug": "rosmonitor",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
@@ -25,6 +25,21 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-5142881516526777~8081445278",
+          "iosAppId": "ca-app-pub-3940256099942544~1458002511",
+          "userTrackingPermission": "This identifier will be used to deliver personalized ads to you."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "80436079-dfd4-4547-b7fb-d264fa1e6fd2"
+      }
     }
   }
 }

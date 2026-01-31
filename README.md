@@ -215,3 +215,6 @@ Future enhancements:
 - Save/load topic configurations
 - Multiple robot connections
 - Recording and playback of telemetry data
+
+## ToDo
+* Add how to use in homescreen

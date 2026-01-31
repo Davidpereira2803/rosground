@@ -169,6 +169,12 @@ export default function TopicBrowserScreen({ navigation }) {
           )}
         </View>
       </ScrollView>
+
+      <View style={styles.footer}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.footerText}>Close</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -195,7 +201,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 24,
+    paddingBottom: 40, // space above footer
   },
   formContainer: {
     padding: 20,
@@ -308,5 +314,20 @@ const styles = StyleSheet.create({
     color: theme.accent.warning,
     textAlign: 'center',
     fontSize: 14,
+  },
+  footer: {
+    padding: 14,
+    paddingHorizontal: 20,
+    paddingBottom: 30,
+    paddingVertical: 20,
+    borderTopWidth: 2,
+    borderTopColor: theme.border.primary,
+    backgroundColor: theme.background.secondary,
+    alignItems: 'center',
+  },
+  footerText: {
+    color: theme.text.primary,
+    fontSize: 18,
+    fontWeight: '600',
   },
 });
