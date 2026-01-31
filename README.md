@@ -1,10 +1,10 @@
-# ROSground
+# ROSmonitor
 
 A React Native mobile application for monitoring and controlling ROS (Robot Operating System) robots via rosbridge WebSocket connection and live MJPEG video streaming.
 
 ## Overview
 
-ROSground is an Expo-managed React Native application that allows you to:
+ROSmonitor is an Expo-managed React Native application that allows you to:
 - Connect to a ROS system via rosbridge WebSocket protocol
 - Subscribe to ROS topics and monitor live telemetry data
 - View live MJPEG video streams from robot cameras
