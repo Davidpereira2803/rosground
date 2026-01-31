@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "ROS Ground",
-    "slug": "rosground",
+    "name": "ROS Monitor",
+    "slug": "rosmonitor",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
@@ -25,11 +25,6 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "extra": {
-      "eas": {
-        "projectId": "46d520b8-6449-4698-b25d-219d9fcb221e"
-      }
     }
   }
 }

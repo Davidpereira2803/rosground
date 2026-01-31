@@ -6,7 +6,9 @@ import { ROSProvider } from './src/context/ROSContext';
 import ConnectScreen from './src/screens/ConnectScreen';
 import DashboardScreen from './src/screens/DashboardScreen';
 import TopicBrowserScreen from './src/screens/TopicBrowserScreen';
+import PublishScreen from './src/screens/PublishScreen';
 import { theme } from './src/theme/colors';
+import { AdConsentProvider } from './src/context/AdConsentContext';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,42 +26,53 @@ const MyTheme = {
 
 export default function App() {
   return (
-    <ROSProvider>
-      <StatusBar style="light" />
-      <NavigationContainer theme={MyTheme}>
-        <Stack.Navigator 
-          initialRouteName="Connect"
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: theme.background.secondary,
-            },
-            headerTintColor: theme.text.primary,
-          }}
-        >
-          <Stack.Screen 
-            name="Connect" 
-            component={ConnectScreen}
-            options={{ 
-              headerShown: false,
+    <AdConsentProvider>
+      <ROSProvider>
+        <StatusBar style="light" />
+        <NavigationContainer theme={MyTheme}>
+          <Stack.Navigator 
+            initialRouteName="Connect"
+            screenOptions={{
+              headerStyle: {
+                backgroundColor: theme.background.secondary,
+              },
+              headerTintColor: theme.text.primary,
             }}
-          />
-          <Stack.Screen 
-            name="Dashboard" 
-            component={DashboardScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen 
-            name="TopicBrowser" 
-            component={TopicBrowserScreen}
-            options={{ 
-              title: 'Add Topic',
-              headerShown: false,
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </ROSProvider>
+          >
+            <Stack.Screen 
+              name="Connect" 
+              component={ConnectScreen}
+              options={{ 
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen 
+              name="Dashboard" 
+              component={DashboardScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen 
+              name="TopicBrowser" 
+              component={TopicBrowserScreen}
+              options={{ 
+                title: 'Add Topic',
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Publish"
+              component={PublishScreen}
+              options={{ 
+                title: 'Publish',
+                presentation: 'modal' ,
+                headerShown: false,
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </ROSProvider>
+    </AdConsentProvider>
   );
 }
