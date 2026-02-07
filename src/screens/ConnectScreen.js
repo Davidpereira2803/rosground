@@ -3,7 +3,6 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, useWin
 import { useROS } from '../context/ROSContext';
 import { theme } from '../theme/colors';
 import Constants from 'expo-constants';
-import { AdBanner } from '../components/AdBanner';
 
 export default function ConnectScreen({ navigation }) {
   const { connectToROS } = useROS();
