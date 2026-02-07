@@ -141,7 +141,7 @@ The app uses the rosbridge WebSocket protocol to communicate with ROS:
 - Centralized message handling updates topic data in real-time
 - Connection state persists across navigation
 
-### Video Streaming
+### Video Streaming (Future Update/Feature)
 
 - Uses React Native Image component with MJPEG stream URL
 - Falls back to "Not connected" state when stream unavailable
@@ -164,7 +164,7 @@ Ensure your mobile device and robot are on the same network:
 - Ensure firewall allows connections on port 9090
 - Confirm both devices are on the same network
 
-### No Video Stream
+### Video Stream (Future Update/Feature)
 
 - Verify MJPEG server is running on the specified port
 - Check video URL in browser: `http://<robot-ip>:8080/stream`

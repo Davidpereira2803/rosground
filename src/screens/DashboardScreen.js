@@ -5,13 +5,15 @@ import VideoPanel from '../components/VideoPanel';
 import { theme } from '../theme/colors';
 import Constants from 'expo-constants';
 
+const ENABLE_VIDEO = false;
+
 export default function DashboardScreen({ navigation }) {
   const { subscribedTopics, connectionInfo, isConnected, unsubscribeFromTopic } = useROS();
   const [isLandscape, setIsLandscape] = useState(false);
 
   const isDev = __DEV__ || Constants.appOwnership === 'expo';
 
-  const hasVideoStream = isConnected && connectionInfo.ip && connectionInfo.videoPort;
+const hasVideoStream = ENABLE_VIDEO && isConnected && connectionInfo.ip && connectionInfo.videoPort;
 
   const mockTopics = isDev ? [
     {
@@ -193,7 +195,7 @@ export default function DashboardScreen({ navigation }) {
       ) : (
         <ScrollView style={styles.scrollContainer}>
           <View style={styles.content}>
-            <VideoPanel />
+            {ENABLE_VIDEO && <VideoPanel />}
             {renderTopics()}
           </View>
         </ScrollView>
