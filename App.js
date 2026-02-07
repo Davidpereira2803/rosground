@@ -8,7 +8,6 @@ import DashboardScreen from './src/screens/DashboardScreen';
 import TopicBrowserScreen from './src/screens/TopicBrowserScreen';
 import PublishScreen from './src/screens/PublishScreen';
 import { theme } from './src/theme/colors';
-import { AdConsentProvider } from './src/context/AdConsentContext';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,7 +25,6 @@ const MyTheme = {
 
 export default function App() {
   return (
-    <AdConsentProvider>
       <ROSProvider>
         <StatusBar style="light" />
         <NavigationContainer theme={MyTheme}>
@@ -73,6 +71,5 @@ export default function App() {
           </Stack.Navigator>
         </NavigationContainer>
       </ROSProvider>
-    </AdConsentProvider>
   );
 }
