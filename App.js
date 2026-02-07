@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
+import { AdConsentProvider } from './src/context/AdConsentContext';
 import { ROSProvider } from './src/context/ROSContext';
 import ConnectScreen from './src/screens/ConnectScreen';
 import DashboardScreen from './src/screens/DashboardScreen';
@@ -25,6 +26,7 @@ const MyTheme = {
 
 export default function App() {
   return (
+    <AdConsentProvider>
       <ROSProvider>
         <StatusBar style="light" />
         <NavigationContainer theme={MyTheme}>
@@ -71,5 +73,6 @@ export default function App() {
           </Stack.Navigator>
         </NavigationContainer>
       </ROSProvider>
+    </AdConsentProvider>
   );
 }
