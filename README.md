@@ -218,3 +218,13 @@ Future enhancements:
 
 ## ToDo
 * Add how to use in homescreen
+
+## Version
+
+**Current**: Beta v1.0.0
+
+**Highlights**:
+- WebSocket rosbridge connection
+- Manual topic subscribe and unsubscribe
+- Live telemetry JSON viewer
+- Dark theme UI

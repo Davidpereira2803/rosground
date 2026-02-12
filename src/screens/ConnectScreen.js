@@ -125,7 +125,7 @@ export default function ConnectScreen({ navigation }) {
       </View>
 
       <View style={[styles.footer, { paddingHorizontal: sideGutter }]}>
-        <Text style={styles.version}>Version 1.0.0</Text>
+        <Text style={styles.version}>Version 1.0.0 (Beta)</Text>
         <Text style={styles.disclaimer}>
           Ensure your device and robot are on the same network.{'\n'}
           This app requires rosbridge_server running on your robot.
