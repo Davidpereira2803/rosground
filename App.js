@@ -7,6 +7,7 @@ import ConnectScreen from './src/screens/ConnectScreen';
 import DashboardScreen from './src/screens/DashboardScreen';
 import TopicBrowserScreen from './src/screens/TopicBrowserScreen';
 import PublishScreen from './src/screens/PublishScreen';
+import HowToUseScreen from './src/screens/HowToUseScreen';
 import { theme } from './src/theme/colors';
 
 const Stack = createNativeStackNavigator();
@@ -56,6 +57,14 @@ export default function App() {
               component={TopicBrowserScreen}
               options={{ 
                 title: 'Add Topic',
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="HowToUse"
+              component={HowToUseScreen}
+              options={{ 
+                title: 'How to Use',
                 headerShown: false,
               }}
             />

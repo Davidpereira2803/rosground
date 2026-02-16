@@ -125,7 +125,13 @@ export default function ConnectScreen({ navigation }) {
       </View>
 
       <View style={[styles.footer, { paddingHorizontal: sideGutter }]}>
-        <Text style={styles.version}>Version 1.0.0 (Beta)</Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('HowToUse')}
+          style={styles.helpLink}
+        >
+          <Text style={styles.helpLinkText}>Need help? View Setup Guide →</Text>
+        </TouchableOpacity>
+        <Text style={styles.version}>Version 1.0.1 (Beta)</Text>
         <Text style={styles.disclaimer}>
           Ensure your device and robot are on the same network.{'\n'}
           This app requires rosbridge_server running on your robot.
@@ -251,5 +257,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 16,
     opacity: 0.7,
+  },
+  helpLink: {
+    marginTop: 16,
+    paddingVertical: 8,
+  },
+  helpLinkText: {
+    fontSize: 13,
+    color: theme.accent.primary,
+    textAlign: 'center',
+    fontWeight: '600',
   },
 });

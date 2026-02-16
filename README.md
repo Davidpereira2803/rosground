@@ -7,15 +7,15 @@ A React Native mobile application for monitoring and controlling ROS (Robot Oper
 ROSmonitor is an Expo-managed React Native application that allows you to:
 - Connect to a ROS system via rosbridge WebSocket protocol
 - Subscribe to ROS topics and monitor live telemetry data
-- View live MJPEG video streams from robot cameras
 - Display real-time sensor data and robot state information
+- View live MJPEG video streams from robot cameras (coming in future release)
 
 ## Features
 
 - **WebSocket Connection**: Connects to rosbridge server for real-time ROS communication
 - **Topic Subscription**: Manually subscribe to any ROS topic by specifying topic name and type
 - **Live Telemetry**: View incoming ROS messages as formatted JSON in real-time
-- **Video Streaming**: Display MJPEG video streams from robot cameras
+- **Setup Guide**: Built-in how-to guide accessible from connect screen
 - **Dark Theme**: Modern dark blue interface optimized for outdoor use and battery life
 - **Cross-Platform**: Runs on both iOS and Android devices
 
@@ -31,15 +31,6 @@ ROSmonitor is an Expo-managed React Native application that allows you to:
    
    # For ROS 1
    roslaunch rosbridge_server rosbridge_websocket.launch
-   ```
-
-3. **MJPEG Server** (optional for video): HTTP server streaming MJPEG on port 8080
-   ```bash
-   # Example using web_video_server (ROS 1)
-   rosrun web_video_server web_video_server
-   
-   # Example using image_transport (ROS 2)
-   ros2 run image_transport republish compressed raw --ros-args -r in/compressed:=/camera/image_raw/compressed -r out:=/camera/image_raw
    ```
 
 ### On Your Mobile Device
@@ -78,8 +69,9 @@ ROSmonitor is an Expo-managed React Native application that allows you to:
 2. On the Connect screen, enter:
    - **Robot IP**: The IP address of your robot or computer running ROS (e.g., 192.168.1.100)
    - **Rosbridge Port**: Port where rosbridge_server is running (default: 9090)
-   - **Video Port**: Port for MJPEG video stream (default: 8080)
+   - **Video Port**: Reserved for future video streaming feature (default: 8080)
 3. Tap **CONNECT**
+4. Need help? Tap "View Setup Guide" link at the bottom of the screen
 
 ### Subscribing to Topics
 
@@ -92,7 +84,6 @@ ROSmonitor is an Expo-managed React Native application that allows you to:
 
 ### Viewing Data
 
-- **Video Feed**: Displays at the top of the Dashboard when connected
 - **Topic Widgets**: Show the most recent message for each subscribed topic
 - **JSON Format**: Messages are displayed as formatted JSON for inspection
 - **Real-time Updates**: Data refreshes automatically as new messages arrive
@@ -115,10 +106,12 @@ rosground/
 │   │   └── ROSContext.js          # WebSocket connection and state management
 │   ├── screens/
 │   │   ├── ConnectScreen.js       # Connection configuration screen
-│   │   ├── DashboardScreen.js     # Main dashboard with topics and video
-│   │   └── TopicBrowserScreen.js  # Topic subscription interface
+│   │   ├── DashboardScreen.js     # Main dashboard with topics
+│   │   ├── TopicBrowserScreen.js  # Topic subscription interface
+│   │   ├── PublishScreen.js       # Topic publishing interface
+│   │   └── HowToUseScreen.js      # Setup guide and troubleshooting
 │   ├── components/
-│   │   └── VideoPanel.js          # MJPEG video display component
+│   │   └── VideoPanel.js          # MJPEG video display component (future)
 │   └── theme/
 │       └── colors.js              # Application color theme
 ├── package.json
@@ -164,13 +157,6 @@ Ensure your mobile device and robot are on the same network:
 - Ensure firewall allows connections on port 9090
 - Confirm both devices are on the same network
 
-### Video Stream (Future Update/Feature)
-
-- Verify MJPEG server is running on the specified port
-- Check video URL in browser: `http://<robot-ip>:8080/stream`
-- Ensure camera topic is publishing
-- Note: Video streaming on React Native may be device-dependent
-
 ### Topics Not Updating
 
 - Verify topic name and type are correct
@@ -208,22 +194,25 @@ For issues and questions:
 ## Roadmap
 
 Future enhancements:
+- **MJPEG Video Streaming**: Live camera feed from robot
 - Auto-discovery of available topics
 - Custom message formatters for common message types
 - Joystick/gamepad control interface
-- Publish to topics from the app
 - Save/load topic configurations
 - Multiple robot connections
 - Recording and playback of telemetry data
 
-## ToDo
-* Add how to use in homescreen
-
 ## Version
 
-**Current**: Beta v1.0.0
+**Current**: Beta v1.0.1
 
-**Highlights**:
+**v1.0.1 Highlights**:
+- Added built-in "How to Use" setup guide
+- Improved connection screen with help link
+- Updated documentation to clarify video streaming as future feature
+- Cleaner UI flow for first-time users
+
+**v1.0.0 Highlights**:
 - WebSocket rosbridge connection
 - Manual topic subscribe and unsubscribe
 - Live telemetry JSON viewer
