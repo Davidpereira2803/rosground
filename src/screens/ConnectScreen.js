@@ -17,7 +17,7 @@ export default function ConnectScreen({ navigation }) {
   const sideGutter = isLandscape ? Math.max(24, Math.round(width * 0.08)) : 20;
 
   const isDev = __DEV__ || Constants.appOwnership === 'expo';
-
+  
   const handleConnect = async () => {
     setError('');
     setConnecting(true);
