@@ -5,7 +5,7 @@ import threading
 import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-import rclply
+import rclpy
 from rxlpy.node import Node
 from sensor_msgs.msg import Image
 
@@ -132,7 +132,7 @@ def start_http_server(port: int):
     :param port: TCP port for the HTTP MJPEG server
     :type port: int
     """
-    server =HTTPServer(('', port), MJPEGRequestHandler)
+    server = HTTPServer(('', port), MJPEGRequestHandler)
     thread = threading.Thread(target=server.serve_forever, daemon=True)
     thread.start()
     return server

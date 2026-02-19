@@ -75,64 +75,71 @@ export const ROSProvider = ({ children }) => {
       args: { topic: topicName }
     };
 
+    let timeoutId;
     const handleResponse = (event) => {
       try {
         const data = JSON.parse(event.data);
         if (data.op === 'service_response' && data.service === '/rosapi/topic_type') {
           const type = data.values?.type || '';
-          callback(type);
+          clearTimeout(timeoutId);
           wsRef.current.removeEventListener('message', handleResponse);
+          callback(type);
         }
       } catch (error) {
-        console.error('Error getting topic type:', error);
+        console.error('Error parsing topic type response:', error);
       }
     };
 
     wsRef.current.addEventListener('message', handleResponse);
     wsRef.current.send(JSON.stringify(request));
-  }, []);
+
+    timeoutId = setTimeout(() => {
+      if (wsRef.current) {
+        wsRef.current.removeEventListener('message', handleResponse);
+        console.warn(`Topic type request timeout for ${topicName}`);
+        callback('');
+      }
+    }, 5000);
+
+}, []);
 
   const connectToROS = (ip, rosbridgePort, videoPort) => {
     return new Promise((resolve, reject) => {
+      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+        wsRef.current.close();
+        wsRef.current = null;
+      }
+
       const wsUrl = `ws://${ip}:${rosbridgePort}`;
       const ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
-        console.log('WebSocket connected');
-        setIsConnected(true);
-        setConnectionInfo({ 
-          ip: ip, 
-          rosbridgePort: rosbridgePort, 
-          videoPort: videoPort 
-        });
         wsRef.current = ws;
-        ws.onmessage = handleWebSocketMessage;
-        
-        setTimeout(() => {
-          if (ws.readyState === WebSocket.OPEN) {
-            const request = {
-              op: 'call_service',
-              service: '/rosapi/topics',
-              args: {}
-            };
-            ws.send(JSON.stringify(request));
-          }
-        }, 500);
-        
-        resolve(ws);
+        setIsConnected(true);
+        setConnectionInfo({
+          ip,
+          rosbridgePort,
+          videoPort,
+        });
+        resolve();
+      };
+
+      ws.onmessage = (event) => {
+        handleWebSocketMessage(event);
       };
 
       ws.onerror = (error) => {
         console.error('WebSocket error:', error);
-        reject(new Error('Connection failed'));
+        setIsConnected(false);
+        setConnectionInfo({ ip: '', rosbridgePort: '', videoPort: '' });
+        reject(new Error('WebSocket connection failed'));
       };
 
       ws.onclose = () => {
         console.log('WebSocket closed');
         setIsConnected(false);
-        if (wsRef.current === ws) {
-          wsRef.current = null;
-        }
+        setConnectionInfo({ ip: '', rosbridgePort: '', videoPort: '' });
+        wsRef.current = null;
       };
     });
   };
