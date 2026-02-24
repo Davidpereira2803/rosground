@@ -15,7 +15,7 @@ ROSmonitor is an Expo-managed React Native application that allows you to:
 - **WebSocket Connection**: Connects to rosbridge server for real-time ROS communication
 - **Topic Subscription**: Manually subscribe to any ROS topic by specifying topic name and type
 - **Live Telemetry**: View incoming ROS messages as formatted JSON in real-time
-- **Setup Guide**: Built-in how-to guide accessible from connect screen
+- **Setup Guide**: Built-in how-to guide with visual hierarchy and icons for easy onboarding
 - **Dark Theme**: Modern dark blue interface optimized for outdoor use and battery life
 - **Cross-Platform**: Runs on both iOS and Android devices
 
@@ -204,7 +204,14 @@ Future enhancements:
 
 ## Version
 
-**Current**: Beta v1.0.1
+**Current**: Beta v1.0.2
+
+**v1.0.2 Highlights**:
+- Enhanced "How to Use" screen with visual hierarchy and icons
+- Improved section organization with material design icons
+- Refined color theme with better contrast and visual balance
+- Footer close button for consistent navigation across screens
+- Better UX for onboarding and troubleshooting guidance
 
 **v1.0.1 Highlights**:
 - Added built-in "How to Use" setup guide
