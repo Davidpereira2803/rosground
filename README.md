@@ -23,8 +23,26 @@ ROSmonitor is an Expo-managed React Native application that allows you to:
 
 ### On Your Robot/Computer
 
-1. **ROS Installation**: ROS 2 or ROS 1 with rosbridge installed
-2. **rosbridge_server**: Running on port 9090 (default)
+1. **ROS Installation** (ROS 2 or ROS 1)
+   - Ensure ROS is installed on your system: https://docs.ros.org/
+
+2. **rosbridge_server Package**
+   - Install rosbridge for WebSocket communication:
+   ```bash
+   # For ROS 2 (Humble or newer)
+   sudo apt install ros-${ROS_DISTRO}-rosbridge-server
+   
+   # For ROS 1
+   sudo apt install ros-${ROS_DISTRO}-rosbridge-server
+   ```
+
+3. **Source ROS Environment**
+   - Before launching rosbridge, source your ROS setup:
+   ```bash
+   source /opt/ros/<your-ROS-distro>/setup.bash
+   ```
+
+4. **Start rosbridge_server** (runs on port 9090 by default)
    ```bash
    # For ROS 2
    ros2 launch rosbridge_server rosbridge_websocket_launch.xml
@@ -32,12 +50,27 @@ ROSmonitor is an Expo-managed React Native application that allows you to:
    # For ROS 1
    roslaunch rosbridge_server rosbridge_websocket.launch
    ```
+   - Verify it's running: You should see output indicating the WebSocket bridge is listening
+
+5. **Network Setup**
+   - Ensure your robot/computer IP is accessible from your mobile device
+   - Both devices must be on the same WiFi network
+   - Ports 9090 (rosbridge) and 8080 (optional video streaming) should be accessible
+   - Check firewall settings if you have connection issues
 
 ### On Your Mobile Device
 
-1. Node.js (v16 or later)
-2. Expo CLI
-3. Expo Go app (for testing) or build for production
+1. **Node.js** (v16 or later) — [Download here](https://nodejs.org/)
+
+2. **Expo CLI**
+   ```bash
+   npm install -g expo-cli
+   ```
+
+3. **Expo Go App** (for development/testing)
+   - iOS: Available on the App Store
+   - Android: Available on Google Play
+   - Alternative: Build a development version for local network access on iOS
 
 ## Installation
 
@@ -208,6 +241,10 @@ Future enhancements:
 ## Version
 
 **Current**: Beta v1.0.2
+
+**v1.0.3 Highlights**:
+[] Improve How to Use include commands and how to set up on the robot
+
 
 **v1.0.2 Highlights**:
 - Enhanced "How to Use" screen with visual hierarchy and icons

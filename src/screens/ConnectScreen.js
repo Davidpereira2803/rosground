@@ -89,17 +89,19 @@ export default function ConnectScreen({ navigation }) {
           />
         </View>
 
-        <View style={styles.inputContainer}>
-          <Text style={styles.label}>VIDEO PORT</Text>
-          <TextInput
-            style={styles.input}
-            value={videoPort}
-            onChangeText={setVideoPort}
-            placeholder="8080"
-            placeholderTextColor={theme.text.placeholder}
-            keyboardType="numeric"
-          />
-        </View>
+        {false && (
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>VIDEO PORT</Text>
+            <TextInput
+              style={styles.input}
+              value={videoPort}
+              onChangeText={setVideoPort}
+              placeholder="8080"
+              placeholderTextColor={theme.text.placeholder}
+              keyboardType="numeric"
+            />
+          </View>
+        )}
 
         <TouchableOpacity
           style={[styles.button, connecting && styles.buttonDisabled]}
