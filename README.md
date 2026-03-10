@@ -61,6 +61,8 @@ ROSmonitor is an Expo-managed React Native application that allows you to:
    - **iOS**: Camera app (opens Expo Go)
    - **Android**: Expo Go app
 
+For iOS testing against a robot on your LAN, prefer a development build or production build over Expo Go. The local-network and App Transport Security settings in [app.json](./app.json) are only applied to your own iOS app bundle.
+
 ## Usage
 
 ### Connecting to Your Robot
@@ -147,6 +149,7 @@ Ensure your mobile device and robot are on the same network:
 1. **WiFi**: Connect both devices to the same WiFi network
 2. **Firewall**: Ensure ports 9090 and 8080 are accessible
 3. **IP Address**: Use the robot's local IP address (not localhost)
+4. **iOS Permission Prompt**: Accept the local network permission prompt the first time the app connects to the robot on iPhone or iPad
 
 ## Troubleshooting
 

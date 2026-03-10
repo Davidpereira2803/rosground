@@ -25,7 +25,14 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.davidpereira2803.rosground",
+      "infoPlist": {
+        "NSLocalNetworkUsageDescription": "ROS Monitor connects to a robot and video stream on your local network.",
+        "NSAppTransportSecurity": {
+          "NSAllowsLocalNetworking": true
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {
