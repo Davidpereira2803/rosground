@@ -4,41 +4,72 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { theme } from '../theme/colors';
 
 const checks = [
-  '1) rosbridge websocket is running on your ROS machine.',
-  '2) Phone and robot are on the same Wi-Fi or LAN.',
+  'Robot/PC has ROS installed (ROS 2 or ROS 1).',
+  'Phone and robot are on the same Wi-Fi/LAN.',
+  'Firewall allows TCP 9090 (rosbridge) and 8080 (optional video).',
+];
+
+const setupCommands = [
+  {
+    title: '1) Install rosbridge (robot/PC)',
+    lines: [
+      'sudo apt update',
+      'sudo apt install ros-${ROS_DISTRO}-rosbridge-server',
+    ],
+  },
+  {
+    title: '2) Source ROS environment (every new terminal)',
+    lines: ['source /opt/ros/<your-ros-distro>/setup.bash'],
+  },
+  {
+    title: '3A) Start rosbridge (ROS 2)',
+    lines: ['ros2 launch rosbridge_server rosbridge_websocket_launch.xml'],
+  },
+  {
+    title: '3B) Start rosbridge (ROS 1)',
+    lines: ['roslaunch rosbridge_server rosbridge_websocket.launch'],
+  },
+  {
+    title: '4) Verify ROS + network',
+    lines: [
+      'ros2 topic list    # or: rostopic list',
+      'ip a               # check robot IP',
+      'ss -ltnp | grep 9090',
+    ],
+  },
 ];
 
 const steps = [
   {
     number: '1',
-    title: 'Connect to ROS',
-    body: 'Enter the robot IP, rosbridge port (default 9090), and video port if used. Tap CONNECT.',
-    icon: 'wifi-check',
+    title: 'Find robot IP',
+    body: 'On robot/PC run "ip a", then use that IP in the app (example: 192.168.1.100).',
+    icon: 'ip-network',
   },
   {
     number: '2',
-    title: 'Add a topic',
-    body: 'Tap ADD TOPIC, pick from the list or enter name and type, then SUBSCRIBE.',
-    icon: 'plus-circle',
+    title: 'Connect in app',
+    body: 'Set Robot IP + Rosbridge Port 9090. Tap CONNECT.',
+    icon: 'wifi-check',
   },
   {
     number: '3',
-    title: 'Monitor data',
-    body: 'Dashboard cards show the latest message. Tap X to unsubscribe.',
-    icon: 'monitor-dashboard',
+    title: 'Add and subscribe topic',
+    body: 'Tap ADD TOPIC, choose from list (or enter manually), then SUBSCRIBE.',
+    icon: 'plus-circle',
   },
   {
     number: '4',
     title: 'Publish test',
-    body: 'Open PUBLISH TEST to advertise a topic and send JSON messages.',
+    body: 'Open PUBLISH TEST, advertise topic first, then send valid JSON.',
     icon: 'send',
   },
 ];
 
 const tips = [
-  { icon: 'robot', text: '1) If available topics are empty, make sure rosapi is running.' },
-  { icon: 'alphabetical', text: '2) Topic type must match exactly (case-sensitive).' },
-  { icon: 'wifi-off', text: '3) Connection issues usually mean IP, ports, or firewall.' },
+  { icon: 'robot', text: 'If topic list is empty, rosbridge/rosapi is likely not running.' },
+  { icon: 'alphabetical', text: 'Topic type must match exactly (case-sensitive).' },
+  { icon: 'wifi-off', text: 'Most connection failures are wrong IP, closed port, or firewall.' },
 ];
 
 export default function HowToUseScreen({ navigation }) {
@@ -61,6 +92,24 @@ export default function HowToUseScreen({ navigation }) {
               <View key={idx} style={styles.checkItem}>
                 <MaterialCommunityIcons name="check-circle-outline" size={16} color={theme.text.accent} />
                 <Text style={styles.cardText}>{check}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+
+        {/* Robot/PC setup commands */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeaderContainer}>
+            <MaterialCommunityIcons name="console" size={18} color={theme.text.accent} />
+            <Text style={styles.sectionTitle}>Robot/PC setup commands</Text>
+          </View>
+          <View style={styles.card}>
+            {setupCommands.map((block, idx) => (
+              <View key={idx} style={styles.commandBlock}>
+                <Text style={styles.commandTitle}>{block.title}</Text>
+                {block.lines.map((line, lineIdx) => (
+                  <Text key={lineIdx} style={styles.commandLine}>{line}</Text>
+                ))}
               </View>
             ))}
           </View>
@@ -230,5 +279,27 @@ const styles = StyleSheet.create({
     color: theme.text.primary,
     fontSize: 18,
     fontWeight: '600',
+  },
+  commandBlock: {
+    marginBottom: 12,
+  },
+  commandTitle: {
+    color: theme.text.primary,
+    fontSize: 13,
+    fontWeight: '700',
+    marginBottom: 6,
+  },
+  commandLine: {
+    color: theme.text.secondary,
+    fontSize: 12,
+    lineHeight: 18,
+    fontFamily: 'monospace',
+    backgroundColor: theme.background.input,
+    borderWidth: 1,
+    borderColor: theme.border.secondary,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    marginBottom: 6,
   },
 });

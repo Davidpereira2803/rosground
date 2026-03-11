@@ -17,6 +17,8 @@ export default function ConnectScreen({ navigation }) {
   const sideGutter = isLandscape ? Math.max(24, Math.round(width * 0.08)) : 20;
 
   const isDev = __DEV__ || Constants.appOwnership === 'expo';
+
+  const appVersion = Constants.expoConfig?.version ?? '0.0.0';
   
   const handleConnect = async () => {
     setError('');
@@ -133,7 +135,7 @@ export default function ConnectScreen({ navigation }) {
         >
           <Text style={styles.helpLinkText}>Need help? View Setup Guide →</Text>
         </TouchableOpacity>
-        <Text style={styles.version}>Version 1.0.1 (Beta)</Text>
+        <Text style={styles.version}>Version {appVersion}</Text>
         <Text style={styles.disclaimer}>
           Ensure your device and robot are on the same network.{'\n'}
           This app requires rosbridge_server running on your robot.
