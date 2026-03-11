@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, useWindowDimensions } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, useWindowDimensions, Linking } from 'react-native';
 import { useROS } from '../context/ROSContext';
 import { theme } from '../theme/colors';
 import Constants from 'expo-constants';
@@ -135,6 +135,15 @@ export default function ConnectScreen({ navigation }) {
         >
           <Text style={styles.helpLinkText}>Need help? View Setup Guide →</Text>
         </TouchableOpacity>
+
+        {/* Website Link */}
+        <TouchableOpacity
+          onPress={() => Linking.openURL('https://pearlabs.dev/rosground')}
+          style={styles.websiteLink}
+        >
+          <Text style={styles.websiteLinkText}>Visit Website →</Text>
+        </TouchableOpacity>
+
         <Text style={styles.version}>Version {appVersion}</Text>
         <Text style={styles.disclaimer}>
           Ensure your device and robot are on the same network.{'\n'}
@@ -267,6 +276,16 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   helpLinkText: {
+    fontSize: 13,
+    color: theme.accent.primary,
+    textAlign: 'center',
+    fontWeight: '600',
+  },
+  websiteLink: {
+    marginTop: 12,
+    paddingVertical: 8,
+  },
+  websiteLinkText: {
     fontSize: 13,
     color: theme.accent.primary,
     textAlign: 'center',

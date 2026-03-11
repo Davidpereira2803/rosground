@@ -240,12 +240,13 @@ Future enhancements:
 
 ## Version
 
-**Current**: Beta v1.0.2
+**Current**: Beta v1.0.3
 
 **v1.0.3 Highlights**:
 - **Gesture-Based Navigation**: Implemented swipe-to-go-back gesture navigation throughout the app for modern mobile UX
 - **Unified Headers**: Standardized header structure across HowToUseScreen, TopicBrowserScreen, and PublishScreen with consistent typography (18px title, 12px subtitle)
 - **Robot/PC Setup Guide**: Added detailed robot/PC setup commands to HowToUseScreen including ROS installation, environment sourcing, and rosbridge launch instructions
+- **Website Link**: Added website link in ConnectScreen footer for easy access to app documentation and resources
 - **Improved Header Layout**: Better visual separation between header sections with refined spacing and alignment
 - **Removed Redundant Footers**: Eliminated footer close buttons in favor of gesture-based navigation as primary interaction method
 
