@@ -64,9 +64,8 @@ export default function TopicBrowserScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.subtitle}>
-          Select from available topics or enter manually
-        </Text>
+        <Text style={styles.title}>Add Topic</Text>
+        <Text style={styles.subtitle}>Select from available topics or enter manually</Text>
       </View>
 
       <ScrollView
@@ -170,11 +169,6 @@ export default function TopicBrowserScreen({ navigation }) {
         </View>
       </ScrollView>
 
-      <View style={styles.footer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.footerText}>Close</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
@@ -185,17 +179,22 @@ const styles = StyleSheet.create({
     backgroundColor: theme.background.primary,
   },
   header: {
-    padding: 20,
-    paddingTop: 40,
     backgroundColor: theme.background.secondary,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    paddingTop: 40,
     borderBottomWidth: 2,
     borderBottomColor: theme.border.primary,
   },
+  title: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: theme.text.primary,
+    marginBottom: 4,
+  },
   subtitle: {
-    fontSize: 14,
-    color: theme.text.secondary,
-    lineHeight: 20,
-    textAlign: 'center',
+    fontSize: 12,
+    color: theme.text.muted,
   },
   scroll: {
     flex: 1,

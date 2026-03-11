@@ -76,8 +76,10 @@ export default function HowToUseScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>How to Use</Text>
-        <Text style={styles.subtitle}>Quick guide to connect, subscribe, and publish.</Text>
+        <View style={styles.headerTextContainer}>
+          <Text style={styles.headerTitle}>How to Use</Text>
+          <Text style={styles.headerSubtitle}>Quick guide to connect, subscribe, and publish</Text>
+        </View>
       </View>
 
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content}>
@@ -150,12 +152,6 @@ export default function HowToUseScreen({ navigation }) {
           </View>
         </View>
       </ScrollView>
-
-      <View style={styles.footer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.footerText}>Close</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
@@ -168,20 +164,34 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: theme.background.secondary,
     paddingHorizontal: 16,
+    paddingVertical: 16,
     paddingTop: 40,
-    paddingBottom: 16,
     borderBottomWidth: 2,
     borderBottomColor: theme.border.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  title: {
+  backButton: {
+    paddingRight: 12,
+    marginRight: 8,
+  },
+  backText: {
     fontSize: 20,
     fontWeight: '700',
     color: theme.text.primary,
-    marginBottom: 4,
   },
-  subtitle: {
+  headerTextContainer: {
+    flex: 1,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: theme.text.primary,
+    marginBottom: 2,
+  },
+  headerSubtitle: {
+    fontSize: 12,
     color: theme.text.secondary,
-    fontSize: 13,
   },
   scroll: {
     flex: 1,
@@ -264,21 +274,6 @@ const styles = StyleSheet.create({
     color: theme.text.secondary,
     fontSize: 13,
     lineHeight: 18,
-  },
-  footer: {
-    padding: 14,
-    paddingHorizontal: 20,
-    paddingBottom: 30,
-    paddingVertical: 20,
-    borderTopWidth: 2,
-    borderTopColor: theme.border.primary,
-    backgroundColor: theme.background.secondary,
-    alignItems: 'center',
-  },
-  footerText: {
-    color: theme.text.primary,
-    fontSize: 18,
-    fontWeight: '600',
   },
   commandBlock: {
     marginBottom: 12,

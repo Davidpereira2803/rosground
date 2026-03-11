@@ -108,11 +108,6 @@ export default function PublishScreen({ navigation }) {
         </View>
       </ScrollView>
 
-      <View style={styles.footer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.footerText}>Close</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }

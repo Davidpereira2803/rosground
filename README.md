@@ -243,8 +243,11 @@ Future enhancements:
 **Current**: Beta v1.0.2
 
 **v1.0.3 Highlights**:
-[] Improve How to Use include commands and how to set up on the robot
-
+- **Gesture-Based Navigation**: Implemented swipe-to-go-back gesture navigation throughout the app for modern mobile UX
+- **Unified Headers**: Standardized header structure across HowToUseScreen, TopicBrowserScreen, and PublishScreen with consistent typography (18px title, 12px subtitle)
+- **Robot/PC Setup Guide**: Added detailed robot/PC setup commands to HowToUseScreen including ROS installation, environment sourcing, and rosbridge launch instructions
+- **Improved Header Layout**: Better visual separation between header sections with refined spacing and alignment
+- **Removed Redundant Footers**: Eliminated footer close buttons in favor of gesture-based navigation as primary interaction method
 
 **v1.0.2 Highlights**:
 - Enhanced "How to Use" screen with visual hierarchy and icons
