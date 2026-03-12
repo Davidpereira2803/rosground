@@ -4,32 +4,41 @@ title: ROS Monitor
 permalink: /
 ---
 
-ROS Monitor is a lightweight mobile app for monitoring ROS topics in real time from your phone.
+ROS Monitor is a lightweight mobile app to monitor ROS topics in real time from your phone.
 
-It connects through rosbridge and lets you inspect live topic messages with a simple interface.
+It connects through rosbridge and gives you a fast way to inspect live message data without opening multiple terminals.
 
-## What It Does
+## Why ROS Monitor
 
-- Connects to ROS 1 and ROS 2 through rosbridge
-- Subscribes to topics and shows live JSON messages
-- Supports optional MJPEG camera preview
-- Works well for quick checks without opening many terminals
+- Connect to ROS 1 and ROS 2 through rosbridge
+- Subscribe to topics and view live JSON messages
+- Preview camera streams with optional MJPEG server
+- Keep a simple workflow for field testing and debugging
 
 ## Quick Start
 
-1. Install and run rosbridge on your ROS machine.
-2. Make sure your phone and ROS machine are on the same network.
-3. Open the app and connect to ws://YOUR_IP:9090.
-4. Add topics and monitor data live.
+1. Run rosbridge on your ROS machine.
+2. Ensure phone and ROS machine are on the same network.
+3. Open ROS Monitor and connect to your host IP on port 9090.
+4. Select topics and start monitoring.
 
-## Next Pages
+Go next:
+- [Setup](setup/)
+- [Usage](usage/)
+- [Privacy](privacy/)
+- [FAQ](faq/)
 
-- Setup
-- Usage
-- Privacy
-- FAQ
+## App Screenshots
 
-## Project
+| Connect | Topics | Dashboard |
+|---|---|---|
+| ![Connect screen](assets/screenshots/PlayStore/Slice%201.png) | ![Topic browser screen](assets/screenshots/PlayStore/Slice%202.png) | ![Dashboard screen](assets/screenshots/PlayStore/Slice%203.png) |
 
-GitHub repository:
-https://github.com/Davidpereira2803/rosground
+| Publish | How To Use | More Views |
+|---|---|---|
+| ![Publish screen](assets/screenshots/PlayStore/Slice%204.png) | ![How to use screen](assets/screenshots/PlayStore/Slice%205.png) | ![Additional app screen](assets/screenshots/PlayStore/Slice%206.png) |
+
+## Open Source
+
+Project repository:
+[https://github.com/Davidpereira2803/rosground](https://github.com/Davidpereira2803/rosground)
