@@ -1,0 +1,39 @@
+title: "ROS Monitor"
+description: "Minimal mobile app to monitor ROS topics in real time."
+baseurl: "/rosground"
+url: "https://davidpereira2803.github.io"
+
+author:
+  name: "David Pereira"
+  github: "davidpereira2803"
+
+lang: en_US
+markdown: kramdown
+theme: minima
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+header_pages:
+  - index.md
+  - setup.md
+  - usage.md
+  - privacy.md
+  - faq.md
+
+exclude:
+  - node_modules/
+  - package.json
+  - package-lock.json
+  - .expo/
+  - .git/
+  - .gitignore
+  - android/
+  - ios/
+  - src/
+  - app/
+  - babel.config.js
+  - metro.config.js
+  - app.json
