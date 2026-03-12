@@ -19,10 +19,10 @@ plugins:
 
 header_pages:
   - index.md
-  - setup.md
-  - usage.md
-  - privacy.md
-  - faq.md
+  - Setup.md
+  - Usage.md
+  - Privacy.md
+  - FAQ.md
 
 exclude:
   - node_modules/
