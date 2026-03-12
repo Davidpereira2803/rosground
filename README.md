@@ -20,9 +20,6 @@
   <a href="https://davidpereira2803.github.io/rosground/">
     <img alt="Docs" src="https://img.shields.io/badge/docs-live-0057D9" />
   </a>
-  <a href="https://github.com/Davidpereira2803/rosground/commits/master">
-    <img alt="Last Commit" src="https://img.shields.io/github/last-commit/Davidpereira2803/rosground" />
-  </a>
 </p>
 
 

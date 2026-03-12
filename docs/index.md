@@ -46,4 +46,4 @@ Project repository:
 ROS Monitor is open source under the MIT License.
 
 Full license text:
-[LICENSE.md](../LICENSE.md)
+[LICENSE.md](license/)
