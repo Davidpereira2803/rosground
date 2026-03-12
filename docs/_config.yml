@@ -22,7 +22,9 @@ header_pages:
   - setup.md
   - usage.md
   - privacy.md
+  - changelog.md
   - FAQ.md
+  - license.md
 
 exclude:
   - node_modules/

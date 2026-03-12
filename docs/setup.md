@@ -38,25 +38,16 @@ ROS 1:
 
 Default port is 9090.
 
-## 4. Optional camera stream
-
-If you want camera preview in the app, run the helper server from this repository:
-
-    python3 video__http_server.py --topic /camera/image_raw --port 8080
-
-Adjust topic and port as needed.
-
-## 5. Network checklist
+## 4. Network checklist
 
 - Phone and ROS machine must be on the same local network
 - Open firewall access for port 9090
 - If using video preview, also open port 8080
 - Use machine local IP, not localhost
 
-## 6. Connect from app
+## 5. Connect from app
 
 - Host: your machine IP
 - Rosbridge port: 9090
-- Video port: 8080 (optional)
 
 After connecting, go to topic browsing and subscribe to the topics you want to monitor.

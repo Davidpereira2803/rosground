@@ -30,11 +30,9 @@ Go next:
 
 ## App Screenshots
 
-| Connect | Topics | Dashboard |
 |---|---|---|
 | ![Connect screen](assets/screenshots/PlayStore/Slice%201.png) | ![Topic browser screen](assets/screenshots/PlayStore/Slice%202.png) | ![Dashboard screen](assets/screenshots/PlayStore/Slice%203.png) |
 
-| Publish | How To Use | More Views |
 |---|---|---|
 | ![Publish screen](assets/screenshots/PlayStore/Slice%204.png) | ![How to use screen](assets/screenshots/PlayStore/Slice%205.png) | ![Additional app screen](assets/screenshots/PlayStore/Slice%206.png) |
 
@@ -42,3 +40,10 @@ Go next:
 
 Project repository:
 [https://github.com/Davidpereira2803/rosground](https://github.com/Davidpereira2803/rosground)
+
+## License
+
+ROS Monitor is open source under the MIT License.
+
+Full license text:
+[LICENSE.md](../LICENSE.md)

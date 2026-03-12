@@ -1,4 +1,32 @@
-# ROSmonitor
+<p align="center">
+  <img src="assets/favicon.png" alt="ROS Monitor logo" width="28" height="28" />
+  <b>ROS Monitor</b>
+</p>
+
+<p align="center">
+  Minimal mobile app to monitor ROS topics in real time
+</p>
+
+<p align="center">
+  <a href="https://github.com/Davidpereira2803/rosground/blob/master/LICENSE.md">
+    <img alt="License" src="https://img.shields.io/github/license/Davidpereira2803/rosground" />
+  </a>
+  <a href="https://github.com/Davidpereira2803/rosground/stargazers">
+    <img alt="Stars" src="https://img.shields.io/github/stars/Davidpereira2803/rosground?style=flat" />
+  </a>
+  <a href="https://github.com/Davidpereira2803/rosground/issues">
+    <img alt="Issues" src="https://img.shields.io/github/issues/Davidpereira2803/rosground" />
+  </a>
+  <a href="https://davidpereira2803.github.io/rosground/">
+    <img alt="Docs" src="https://img.shields.io/badge/docs-live-0057D9" />
+  </a>
+  <a href="https://github.com/Davidpereira2803/rosground/commits/master">
+    <img alt="Last Commit" src="https://img.shields.io/github/last-commit/Davidpereira2803/rosground" />
+  </a>
+</p>
+
+
+# ROS Monitor
 
 A React Native mobile application for monitoring and controlling ROS (Robot Operating System) robots via rosbridge WebSocket connection and live MJPEG video streaming.
 

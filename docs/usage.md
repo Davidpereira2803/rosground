@@ -16,7 +16,6 @@ Enter:
 
 - Host IP: your ROS machine local IP
 - Rosbridge port: 9090
-- Video port: 8080 (optional)
 
 Then connect.
 
@@ -37,10 +36,6 @@ Then connect.
 - Advertise the topic
 - Send a valid JSON payload
 
-## 6. Camera preview (optional)
-
-If video server is running, open the video panel to preview MJPEG stream.
-
-## 7. Disconnect
+## 6. Disconnect
 
 Close the connection when done to stop subscriptions and free network resources.

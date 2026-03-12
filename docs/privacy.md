@@ -22,12 +22,6 @@ Connection settings may be stored locally on your device, including:
 
 ROS messages and optional MJPEG video are consumed over your local network connection and are not sent to ROS Monitor servers.
 
-## Advertising
-
-In production builds, Google Mobile Ads may be used. Data handling related to ads follows Google policies.
-
-More information:
-https://policies.google.com/technologies/ads
 
 ## Permissions
 
