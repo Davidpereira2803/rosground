@@ -2,6 +2,7 @@ title: "ROS Monitor"
 description: "Minimal mobile app to monitor ROS topics in real time."
 baseurl: "/rosground"
 url: "https://davidpereira2803.github.io"
+permalink: pretty
 
 author:
   name: "David Pereira"
