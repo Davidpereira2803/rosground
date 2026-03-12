@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Privacy
+permalink: /privacy/
 ---
 
 ROS Monitor is designed for local robotics workflows and minimal data handling.

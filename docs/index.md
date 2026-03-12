@@ -1,6 +1,7 @@
 ---
 layout: page
 title: ROS Monitor
+permalink: /
 ---
 
 ROS Monitor is a lightweight mobile app for monitoring ROS topics in real time from your phone.

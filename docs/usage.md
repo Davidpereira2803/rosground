@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Usage
+permalink: /usage/
 ---
 
 Use this flow after setup is complete.

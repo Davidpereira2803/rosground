@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Setup
+permalink: /setup/
 ---
 
 This guide helps you connect ROS Monitor to your ROS machine in a few steps.
