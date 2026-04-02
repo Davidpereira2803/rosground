@@ -265,7 +265,15 @@ Future enhancements:
 
 ## Version
 
-**Current**: Beta v1.0.3
+**Current**: Beta v1.0.4
+
+**v1.0.4 Highlights**:
+- **Inline Feedback**: Replaced disruptive alert popups with inline banners and status messages on connect, topic browsing, and publish flows.
+- **Safer Connect Flow**: Added IPv4 and port validation plus a connection timeout so bad input and unreachable rosbridge servers fail clearly.
+- **Topic Browser Improvements**: Made available topics fully scrollable, added clearer subscribe validation, and kept topic type lookup feedback visible.
+- **Publish Flow Cleanup**: Made advertise/publish state explicit and reset publishing when topic details change so messages are less error-prone.
+- **Dashboard Readability**: Improved topic cards with better hierarchy, scrollable JSON payloads, and clearer empty/message states for longer telemetry.
+- **Connection Reliability**: Hardened ROS service lookups and cleanup so temporary listeners and connection attempts do not linger.
 
 **v1.0.3 Highlights**:
 - **Gesture-Based Navigation**: Implemented swipe-to-go-back gesture navigation throughout the app for modern mobile UX

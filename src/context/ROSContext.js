@@ -20,6 +20,8 @@ export const ROSProvider = ({ children }) => {
   const [availableTopics, setAvailableTopics] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
   const wsRef = useRef(null);
+  const topicTypeRequestRef = useRef(null);
+  const connectTimeoutRef = useRef(null);
 
   const handleWebSocketMessage = useCallback((event) => {
     try {
@@ -69,6 +71,13 @@ export const ROSProvider = ({ children }) => {
       return;
     }
 
+    if (topicTypeRequestRef.current) {
+      const { timeoutId, handleResponse } = topicTypeRequestRef.current;
+      clearTimeout(timeoutId);
+      wsRef.current.removeEventListener('message', handleResponse);
+      topicTypeRequestRef.current = null;
+    }
+
     const request = {
       op: 'call_service',
       service: '/rosapi/topic_type',
@@ -83,6 +92,9 @@ export const ROSProvider = ({ children }) => {
           const type = data.values?.type || '';
           clearTimeout(timeoutId);
           wsRef.current.removeEventListener('message', handleResponse);
+          if (topicTypeRequestRef.current?.handleResponse === handleResponse) {
+            topicTypeRequestRef.current = null;
+          }
           callback(type);
         }
       } catch (error) {
@@ -96,15 +108,25 @@ export const ROSProvider = ({ children }) => {
     timeoutId = setTimeout(() => {
       if (wsRef.current) {
         wsRef.current.removeEventListener('message', handleResponse);
+        if (topicTypeRequestRef.current?.handleResponse === handleResponse) {
+          topicTypeRequestRef.current = null;
+        }
         console.warn(`Topic type request timeout for ${topicName}`);
         callback('');
       }
     }, 5000);
 
+    topicTypeRequestRef.current = { timeoutId, handleResponse };
+
 }, []);
 
   const connectToROS = (ip, rosbridgePort, videoPort) => {
     return new Promise((resolve, reject) => {
+      if (connectTimeoutRef.current) {
+        clearTimeout(connectTimeoutRef.current);
+        connectTimeoutRef.current = null;
+      }
+
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
         wsRef.current.close();
         wsRef.current = null;
@@ -112,16 +134,31 @@ export const ROSProvider = ({ children }) => {
 
       const wsUrl = `ws://${ip}:${rosbridgePort}`;
       const ws = new WebSocket(wsUrl);
+      let settled = false;
+
+      const finish = (handler) => {
+        if (settled) {
+          return;
+        }
+        settled = true;
+        if (connectTimeoutRef.current) {
+          clearTimeout(connectTimeoutRef.current);
+          connectTimeoutRef.current = null;
+        }
+        handler();
+      };
 
       ws.onopen = () => {
-        wsRef.current = ws;
-        setIsConnected(true);
-        setConnectionInfo({
-          ip,
-          rosbridgePort,
-          videoPort,
+        finish(() => {
+          wsRef.current = ws;
+          setIsConnected(true);
+          setConnectionInfo({
+            ip,
+            rosbridgePort,
+            videoPort,
+          });
+          resolve();
         });
-        resolve();
       };
 
       ws.onmessage = (event) => {
@@ -130,17 +167,44 @@ export const ROSProvider = ({ children }) => {
 
       ws.onerror = (error) => {
         console.error('WebSocket error:', error);
-        setIsConnected(false);
-        setConnectionInfo({ ip: '', rosbridgePort: '', videoPort: '' });
-        reject(new Error('WebSocket connection failed'));
+        finish(() => {
+          setIsConnected(false);
+          setConnectionInfo({ ip: '', rosbridgePort: '', videoPort: '' });
+          reject(new Error('WebSocket connection failed'));
+        });
       };
 
       ws.onclose = () => {
         console.log('WebSocket closed');
+        if (!settled) {
+          finish(() => {
+            setIsConnected(false);
+            setConnectionInfo({ ip: '', rosbridgePort: '', videoPort: '' });
+            wsRef.current = null;
+            reject(new Error('WebSocket connection closed before it was established'));
+          });
+          return;
+        }
         setIsConnected(false);
         setConnectionInfo({ ip: '', rosbridgePort: '', videoPort: '' });
         wsRef.current = null;
       };
+
+      connectTimeoutRef.current = setTimeout(() => {
+        if (!settled) {
+          try {
+            ws.close();
+          } catch (closeError) {
+            console.warn('Failed to close timed out WebSocket:', closeError);
+          }
+          finish(() => {
+            setIsConnected(false);
+            setConnectionInfo({ ip: '', rosbridgePort: '', videoPort: '' });
+            wsRef.current = null;
+            reject(new Error('Connection timed out'));
+          });
+        }
+      }, 8000);
     });
   };
 
@@ -222,6 +286,20 @@ export const ROSProvider = ({ children }) => {
   };
 
   const disconnect = () => {
+    if (connectTimeoutRef.current) {
+      clearTimeout(connectTimeoutRef.current);
+      connectTimeoutRef.current = null;
+    }
+
+    if (topicTypeRequestRef.current) {
+      const { timeoutId, handleResponse } = topicTypeRequestRef.current;
+      clearTimeout(timeoutId);
+      if (wsRef.current) {
+        wsRef.current.removeEventListener('message', handleResponse);
+      }
+      topicTypeRequestRef.current = null;
+    }
+
     if (wsRef.current) {
       wsRef.current.close();
       wsRef.current = null;

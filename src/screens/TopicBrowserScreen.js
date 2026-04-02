@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, FlatList } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, FlatList } from 'react-native';
 import { useROS } from '../context/ROSContext';
 import { theme } from '../theme/colors';
 
@@ -9,6 +9,8 @@ export default function TopicBrowserScreen({ navigation }) {
   const [topicType, setTopicType] = useState('');
   const [showAutoDetect, setShowAutoDetect] = useState(true);
   const [filteredTopics, setFilteredTopics] = useState([]);
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('info');
 
   useEffect(() => {
     if (isConnected && availableTopics.length === 0) {
@@ -28,37 +30,61 @@ export default function TopicBrowserScreen({ navigation }) {
     }
   }, [topicName, availableTopics]);
 
+  useEffect(() => {
+    setMessage('');
+    setMessageType('info');
+  }, [topicName, topicType]);
+
   const handleTopicSelect = (topic) => {
     setTopicName(topic);
     setShowAutoDetect(false);
+    setMessage('');
     
     getTopicType(topic, (type) => {
       setTopicType(type);
+      setMessage(type ? `Loaded type for ${topic}.` : `No type returned for ${topic}.`);
+      setMessageType(type ? 'success' : 'error');
     });
   };
 
   const handleSubscribe = () => {
-    if (!topicName.trim()) {
-      Alert.alert('Error', 'Please enter a topic name');
+    const trimmedTopicName = topicName.trim();
+    const trimmedTopicType = topicType.trim();
+
+    if (!trimmedTopicName) {
+      setMessage('Please enter a topic name.');
+      setMessageType('error');
       return;
     }
 
-    if (!topicType.trim()) {
-      Alert.alert('Error', 'Please enter a topic type');
+    if (!trimmedTopicType) {
+      setMessage('Please enter a topic type.');
+      setMessageType('error');
       return;
     }
 
     if (!isConnected) {
-      Alert.alert('Error', 'Not connected to ROS');
+      setMessage('Connect to ROS before subscribing.');
+      setMessageType('error');
       return;
     }
 
-    subscribeToTopic(topicName.trim(), topicType.trim());
+    if (!trimmedTopicName.startsWith('/')) {
+      setMessage('Topic names should start with /.');
+      setMessageType('error');
+      return;
+    }
+
+    subscribeToTopic(trimmedTopicName, trimmedTopicType);
+    setMessage(`Subscribed to ${trimmedTopicName}.`);
+    setMessageType('success');
     navigation.goBack();
   };
 
   const handleRefresh = () => {
     discoverTopics();
+    setMessage('Refreshing available topics...');
+    setMessageType('info');
   };
 
   return (
@@ -87,9 +113,10 @@ export default function TopicBrowserScreen({ navigation }) {
               {showAutoDetect && filteredTopics.length > 0 && (
                 <View style={styles.topicList}>
                   <FlatList
-                    data={filteredTopics.slice(0, 10)}
+                    data={filteredTopics}
                     keyExtractor={(item) => item}
-                    scrollEnabled={false}
+                    nestedScrollEnabled
+                    showsVerticalScrollIndicator={true}
                     renderItem={({ item }) => (
                       <TouchableOpacity
                         style={styles.topicItem}
@@ -99,11 +126,6 @@ export default function TopicBrowserScreen({ navigation }) {
                       </TouchableOpacity>
                     )}
                   />
-                  {filteredTopics.length > 10 && (
-                    <Text style={styles.moreTopicsHint}>
-                      + {filteredTopics.length - 10} more topics...
-                    </Text>
-                  )}
                 </View>
               )}
 
@@ -158,6 +180,12 @@ export default function TopicBrowserScreen({ navigation }) {
           >
             <Text style={styles.buttonText}>SUBSCRIBE</Text>
           </TouchableOpacity>
+
+          {message ? (
+            <View style={[styles.messageBanner, messageType === 'error' && styles.messageBannerError, messageType === 'success' && styles.messageBannerSuccess]}>
+              <Text style={styles.messageBannerText}>{message}</Text>
+            </View>
+          ) : null}
 
           {!isConnected && (
             <View style={styles.warningContainer}>
@@ -235,22 +263,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: theme.border.primary,
     maxHeight: 300,
+    overflow: 'hidden',
   },
   topicItem: {
     padding: 12,
     borderBottomWidth: 1,
     borderBottomColor: theme.border.subtle,
+    backgroundColor: theme.background.card,
   },
   topicItemText: {
     fontSize: 14,
     color: theme.text.primary,
-  },
-  moreTopicsHint: {
-    padding: 10,
-    fontSize: 12,
-    color: theme.text.muted,
-    textAlign: 'center',
-    fontStyle: 'italic',
   },
   noTopicsText: {
     fontSize: 13,
@@ -313,6 +336,26 @@ const styles = StyleSheet.create({
     color: theme.accent.warning,
     textAlign: 'center',
     fontSize: 14,
+  },
+  messageBanner: {
+    marginTop: 14,
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: theme.background.card,
+    borderWidth: 1,
+    borderColor: theme.border.primary,
+  },
+  messageBannerError: {
+    borderColor: theme.accent.error,
+  },
+  messageBannerSuccess: {
+    borderColor: theme.accent.success,
+  },
+  messageBannerText: {
+    color: theme.text.primary,
+    fontSize: 13,
+    textAlign: 'center',
+    lineHeight: 18,
   },
   footer: {
     padding: 14,

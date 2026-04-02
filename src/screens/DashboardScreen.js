@@ -44,6 +44,7 @@ const hasVideoStream = ENABLE_VIDEO && isConnected && connectionInfo.ip && conne
   const displayTopics = isDev && subscribedTopics.length === 0 
     ? mockTopics 
     : subscribedTopics;
+  const showDevPreview = isDev && !isConnected && subscribedTopics.length === 0;
 
   useEffect(() => {
     const updateOrientation = () => {
@@ -79,8 +80,16 @@ const hasVideoStream = ENABLE_VIDEO && isConnected && connectionInfo.ip && conne
     <View key={index} style={[styles.topicWidget, isLandscape && styles.topicWidgetLandscape]}>
       <View style={styles.topicHeader}>
         <View style={styles.topicTitleContainer}>
-          <Text style={styles.topicName}>{item.topic}</Text>
-          <Text style={styles.topicType}>{item.type}</Text>
+          <Text style={styles.topicName} numberOfLines={2} ellipsizeMode="tail">
+            {item.topic}
+          </Text>
+          <View style={styles.topicMetaRow}>
+            <View style={styles.topicTypePill}>
+              <Text style={styles.topicTypePillText} numberOfLines={1} ellipsizeMode="tail">
+                {item.type}
+              </Text>
+            </View>
+          </View>
         </View>
         {!isDev || subscribedTopics.length > 0 ? (
           <TouchableOpacity 
@@ -97,11 +106,26 @@ const hasVideoStream = ENABLE_VIDEO && isConnected && connectionInfo.ip && conne
       </View>
       <View style={styles.messageContainer}>
         <Text style={styles.messageLabel}>LATEST MESSAGE</Text>
-        <ScrollView horizontal style={styles.messageScroll}>
-          <Text style={styles.messageText}>
-            {item.lastMsg ? JSON.stringify(item.lastMsg, null, 2) : 'Waiting for data...'}
-          </Text>
-        </ScrollView>
+        {item.lastMsg ? (
+          <View style={styles.messageViewport}>
+            <ScrollView
+              style={styles.messageScroll}
+              contentContainerStyle={styles.messageScrollContent}
+              nestedScrollEnabled
+              showsVerticalScrollIndicator={true}
+              showsHorizontalScrollIndicator={true}
+              scrollEventThrottle={16}
+            >
+              <Text style={styles.messageText} selectable>
+                {JSON.stringify(item.lastMsg, null, 2)}
+              </Text>
+            </ScrollView>
+          </View>
+        ) : (
+          <View style={styles.emptyMessageState}>
+            <Text style={styles.emptyMessageText}>Waiting for the first message...</Text>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -168,13 +192,23 @@ const hasVideoStream = ENABLE_VIDEO && isConnected && connectionInfo.ip && conne
 
       {isLandscape ? (
         <View style={styles.landscapeContainer}>
-          <View style={[
-            styles.landscapeLeft, 
-            !hasVideoStream && styles.landscapeLeftCompact
-          ]}>
-          </View>
+          {hasVideoStream ? (
+            <View style={styles.landscapeLeft}>
+              <VideoPanel />
+            </View>
+          ) : null}
           <View style={styles.landscapeRight}>
-            <Text style={styles.sectionTitle}>SUBSCRIBED TOPICS</Text>
+            {showDevPreview && (
+              <View style={styles.previewBanner}>
+                <Text style={styles.previewBannerText}>
+                  Preview mode is showing sample topics until you connect to a live ROS system.
+                </Text>
+              </View>
+            )}
+            <View style={styles.sectionHeaderRow}>
+              <Text style={styles.sectionTitle}>SUBSCRIBED TOPICS</Text>
+              <Text style={styles.sectionCount}>{displayTopics.length}</Text>
+            </View>
             {displayTopics.length === 0 ? (
               <View style={styles.emptyContainer}>
                 <Text style={styles.emptyText}>No topics subscribed yet</Text>
@@ -186,6 +220,7 @@ const hasVideoStream = ENABLE_VIDEO && isConnected && connectionInfo.ip && conne
                 showsHorizontalScrollIndicator={true}
                 style={styles.topicsHorizontalScroll}
                 contentContainerStyle={styles.topicsHorizontalContent}
+                nestedScrollEnabled
               >
                 {displayTopics.map((item, index) => renderTopicCard(item, index))}
               </ScrollView>
@@ -193,7 +228,7 @@ const hasVideoStream = ENABLE_VIDEO && isConnected && connectionInfo.ip && conne
           </View>
         </View>
       ) : (
-        <ScrollView style={styles.scrollContainer}>
+        <ScrollView style={styles.scrollContainer} nestedScrollEnabled>
           <View style={styles.content}>
             {ENABLE_VIDEO && <VideoPanel />}
             {renderTopics()}
@@ -289,9 +324,6 @@ const styles = StyleSheet.create({
     width: '40%',
     marginRight: 16,
   },
-  landscapeLeftCompact: {
-    width: '25%',
-  },
   landscapeRight: {
     flex: 1,
   },
@@ -307,22 +339,59 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 14,
     fontWeight: '700',
-    marginBottom: 16,
     color: theme.text.accent,
     letterSpacing: 1,
+  },
+  sectionHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  sectionCount: {
+    minWidth: 28,
+    textAlign: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    overflow: 'hidden',
+    backgroundColor: theme.background.card,
+    color: theme.text.secondary,
+    fontSize: 12,
+    fontWeight: '700',
   },
   emptyContainer: {
     alignItems: 'center',
     paddingVertical: 40,
+    paddingHorizontal: 16,
+    backgroundColor: theme.background.card,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: theme.border.primary,
   },
   emptyText: {
     fontSize: 16,
     color: theme.text.secondary,
     marginBottom: 8,
+    textAlign: 'center',
   },
   emptySubtext: {
     fontSize: 13,
     color: theme.text.muted,
+    textAlign: 'center',
+  },
+  previewBanner: {
+    backgroundColor: theme.background.card,
+    borderColor: theme.border.primary,
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 14,
+  },
+  previewBannerText: {
+    color: theme.text.secondary,
+    fontSize: 12,
+    lineHeight: 17,
   },
   topicWidget: {
     backgroundColor: theme.background.card,
@@ -331,9 +400,14 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderWidth: 1,
     borderColor: theme.border.primary,
+    shadowColor: '#000',
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 2,
   },
   topicWidgetLandscape: {
-    width: 300,
+    width: 320,
     marginRight: 12,
     marginBottom: 0,
   },
@@ -345,27 +419,56 @@ const styles = StyleSheet.create({
   },
   topicTitleContainer: {
     flex: 1,
+    paddingRight: 12,
   },
   topicName: {
     fontSize: 16,
     fontWeight: '700',
     color: theme.text.primary,
     marginBottom: 4,
+    lineHeight: 20,
   },
-  topicType: {
-    fontSize: 11,
-    color: theme.text.muted,
+  topicMetaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  topicTypePill: {
+    alignSelf: 'flex-start',
+    backgroundColor: theme.background.primary,
+    borderWidth: 1,
+    borderColor: theme.border.primary,
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    maxWidth: '100%',
+  },
+  topicTypePillText: {
+    fontSize: 10,
+    color: theme.text.secondary,
+    fontWeight: '600',
+    letterSpacing: 0.3,
   },
   unsubscribeButton: {
-    padding: 4,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: theme.background.primary,
+    borderWidth: 1,
+    borderColor: theme.border.primary,
     marginLeft: 12,
   },
   unsubscribeText: {
-    fontSize: 20,
+    fontSize: 18,
     color: theme.accent.error,
+    fontWeight: '700',
+    lineHeight: 20,
   },
   messageContainer: {
-    marginTop: 8,
+    marginTop: 4,
   },
   messageLabel: {
     fontSize: 10,
@@ -374,17 +477,41 @@ const styles = StyleSheet.create({
     color: theme.text.accent,
     letterSpacing: 1,
   },
+  messageViewport: {
+    maxHeight: 190,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: theme.border.subtle,
+    backgroundColor: theme.background.primary,
+    overflow: 'hidden',
+  },
   messageScroll: {
-    maxHeight: 120,
+    maxHeight: 190,
+  },
+  messageScrollContent: {
+    paddingBottom: 10,
   },
   messageText: {
     fontSize: 11,
+    lineHeight: 16,
+    fontFamily: 'monospace',
     color: theme.accent.success,
-    backgroundColor: theme.background.primary,
-    padding: 12,
-    borderRadius: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    minWidth: '100%',
+  },
+  emptyMessageState: {
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: theme.border.subtle,
+    backgroundColor: theme.background.primary,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  emptyMessageText: {
+    color: theme.text.muted,
+    fontSize: 11,
+    lineHeight: 16,
   },
   buttonContainer: {
     padding: 18,

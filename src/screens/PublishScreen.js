@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useROS } from '../context/ROSContext';
 import { theme } from '../theme/colors';
 
@@ -9,31 +9,48 @@ export default function PublishScreen({ navigation }) {
   const [topicType, setTopicType] = useState('std_msgs/msg/String');
   const [rawMessage, setRawMessage] = useState('{"data":"Hello from phone"}');
   const [advertised, setAdvertised] = useState(false);
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('info');
+
+  useEffect(() => {
+    if (advertised) {
+      setAdvertised(false);
+      setMessage('Topic details changed. Advertise again before publishing.');
+      setMessageType('info');
+    }
+  }, [topicName, topicType, rawMessage]);
 
   const handleAdvertise = () => {
     if (!isConnected) {
-      Alert.alert('Not Connected', 'Connect first.');
+      setMessage('Connect to rosbridge before advertising.');
+      setMessageType('error');
       return;
     }
     if (!topicName.trim() || !topicType.trim()) {
-      Alert.alert('Error', 'Topic name and type required.');
+      setMessage('Topic name and type are required.');
+      setMessageType('error');
       return;
     }
     advertiseTopic(topicName.trim(), topicType.trim());
     setAdvertised(true);
+    setMessage(`Advertising ${topicName.trim()}.`);
+    setMessageType('success');
   };
 
   const handlePublish = () => {
     if (!advertised) {
-      Alert.alert('Not Advertised', 'Advertise the topic first.');
+      setMessage('Advertise the topic before publishing.');
+      setMessageType('error');
       return;
     }
     try {
       const msgObj = JSON.parse(rawMessage);
       publishMessage(topicName.trim(), msgObj);
-      Alert.alert('Published', 'Message sent.');
+      setMessage('Message sent.');
+      setMessageType('success');
     } catch (e) {
-      Alert.alert('Invalid JSON', e.message);
+      setMessage(`Invalid JSON: ${e.message}`);
+      setMessageType('error');
     }
   };
 
@@ -41,6 +58,8 @@ export default function PublishScreen({ navigation }) {
     if (advertised) {
       unadvertiseTopic(topicName.trim());
       setAdvertised(false);
+      setMessage(`Stopped advertising ${topicName.trim()}.`);
+      setMessageType('info');
     }
   };
 
@@ -92,13 +111,19 @@ export default function PublishScreen({ navigation }) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.button, !advertised && styles.buttonDisabled]}
+                style={[styles.button, (!advertised || !isConnected) && styles.buttonDisabled]}
               onPress={handlePublish}
-              disabled={!advertised}
+                disabled={!advertised || !isConnected}
             >
               <Text style={styles.buttonText}>PUBLISH</Text>
             </TouchableOpacity>
           </View>
+
+          {message ? (
+            <View style={[styles.messageBanner, messageType === 'error' && styles.messageBannerError, messageType === 'success' && styles.messageBannerSuccess]}>
+              <Text style={styles.messageBannerText}>{message}</Text>
+            </View>
+          ) : null}
 
           {!isConnected && (
             <View style={styles.warning}>
@@ -163,6 +188,26 @@ const styles = StyleSheet.create({
     borderColor: theme.accent.warning,
   },
   warningText: { color: theme.accent.warning, fontSize: 12, textAlign: 'center' },
+  messageBanner: {
+    marginTop: 12,
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: theme.background.card,
+    borderWidth: 1,
+    borderColor: theme.border.primary,
+  },
+  messageBannerError: {
+    borderColor: theme.accent.error,
+  },
+  messageBannerSuccess: {
+    borderColor: theme.accent.success,
+  },
+  messageBannerText: {
+    color: theme.text.primary,
+    fontSize: 13,
+    textAlign: 'center',
+    lineHeight: 18,
+  },
   footer: {
     padding: 14,
     paddingHorizontal: 20,

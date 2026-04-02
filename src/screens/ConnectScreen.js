@@ -24,23 +24,42 @@ export default function ConnectScreen({ navigation }) {
     setError('');
     setConnecting(true);
 
-    if (!ip.trim()) {
-      setError('Please enter an IP address');
+    const trimmedIp = ip.trim();
+    const trimmedRosbridgePort = rosbridgePort.trim();
+    const trimmedVideoPort = videoPort.trim();
+
+    const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
+    const portPattern = /^\d+$/;
+
+    const ipIsValid = ipPattern.test(trimmedIp) && trimmedIp.split('.').every(part => Number(part) >= 0 && Number(part) <= 255);
+    const rosbridgePortNumber = Number(trimmedRosbridgePort);
+    const videoPortNumber = Number(trimmedVideoPort);
+
+    if (!ipIsValid) {
+      setError('Enter a valid IPv4 address, such as 192.168.1.42.');
       setConnecting(false);
       return;
     }
 
-    if (!rosbridgePort.trim()) {
-      setError('Please enter a rosbridge port');
+    if (!portPattern.test(trimmedRosbridgePort) || rosbridgePortNumber < 1 || rosbridgePortNumber > 65535) {
+      setError('Enter a valid rosbridge port between 1 and 65535.');
+      setConnecting(false);
+      return;
+    }
+
+    if (trimmedVideoPort && (!portPattern.test(trimmedVideoPort) || videoPortNumber < 1 || videoPortNumber > 65535)) {
+      setError('Enter a valid video port between 1 and 65535, or leave it blank.');
       setConnecting(false);
       return;
     }
 
     try {
-      await connectToROS(ip, rosbridgePort, videoPort);
+      await connectToROS(trimmedIp, trimmedRosbridgePort, trimmedVideoPort);
       navigation.navigate('Dashboard');
     } catch (err) {
-      setError('Connection failed. Please check the IP and Port.');
+      setError(err?.message === 'Connection timed out'
+        ? 'Could not reach rosbridge in time. Check the IP, port, and network.'
+        : 'Connection failed. Please check the IP, port, and network.');
       console.error(err);
     } finally {
       setConnecting(false);
@@ -48,6 +67,7 @@ export default function ConnectScreen({ navigation }) {
   };
 
   const handleDevSkip = () => {
+    setError('Dev mode preview: dashboard opens without a live ROS connection.');
     console.log('DEV MODE: Skipping connection validation');
     navigation.navigate('Dashboard');
   };
@@ -125,7 +145,11 @@ export default function ConnectScreen({ navigation }) {
           </TouchableOpacity>
         )}
 
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+        {error ? (
+          <View style={styles.messageBanner}>
+            <Text style={styles.messageBannerText}>{error}</Text>
+          </View>
+        ) : null}
       </View>
 
       <View style={[styles.footer, { paddingHorizontal: sideGutter }]}>
@@ -251,6 +275,20 @@ const styles = StyleSheet.create({
     marginTop: 16,
     textAlign: 'center',
     fontSize: 14,
+  },
+  messageBanner: {
+    marginTop: 16,
+    backgroundColor: theme.background.card,
+    borderColor: theme.accent.error,
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 12,
+  },
+  messageBannerText: {
+    color: theme.accent.error,
+    textAlign: 'center',
+    fontSize: 13,
+    lineHeight: 18,
   },
   footer: {
     paddingHorizontal: 20,
